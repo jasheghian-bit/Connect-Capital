@@ -1,0 +1,39 @@
+{
+  "name": "connect-capital",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "db:generate": "drizzle-kit generate",
+    "db:push": "drizzle-kit push",
+    "db:seed": "tsx db/seed.ts",
+    "db:guards": "psql $DATABASE_URL -f migrations/0001_kernel_guards.sql && psql $DATABASE_URL -f migrations/0002_merchant_intake.sql",
+    "audit:verify": "tsx scripts/verify-chain.ts",
+    "typecheck": "tsc --noEmit",
+    "preflight": "tsx scripts/preflight.ts"
+  },
+  "dependencies": {
+    "@clerk/nextjs": "^6.0.0",
+    "drizzle-orm": "^0.36.0",
+    "next": "^15.0.0",
+    "pg": "^8.13.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "lucide-react": "^0.454.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/pg": "^8.11.0",
+    "@types/react": "^19.0.0",
+    "drizzle-kit": "^0.28.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  }
+}
