@@ -52,10 +52,35 @@ export interface Actor {
 export type Resource =
   | { kind: 'application'; id: string; merchantOrgId: string; status: string }
   | {
-      kind: 'application_blinded'; // pre-authorization match card
+      /**
+       * The funder-facing file (identity + allowlisted summary). `grants`
+       * holds LIVE authorizations only; revoked/expired grants are absent.
+       * There is no pre-authorization variant — the blinded match card was
+       * removed Sep 2026. Being matched confers nothing.
+       */
+      kind: 'application_file';
       id: string;
       merchantOrgId: string;
-      matchedProviderOrgIds: string[];
+      grants: Array<{ providerOrgId: string }>;
+    }
+  | {
+      /** A match row: internal routing output. Never funder-readable. */
+      kind: 'match';
+      applicationId: string;
+      merchantOrgId: string;
+      providerOrgId: string;
+    }
+  | {
+      /** Who else holds a grant on this file, or how many. Merchant-only. */
+      kind: 'application_grantees';
+      applicationId: string;
+      merchantOrgId: string;
+    }
+  | {
+      /** A–F grade and match score. Internal; picks the suggested set only. */
+      kind: 'application_grade';
+      applicationId: string;
+      merchantOrgId: string;
     }
   | {
       kind: 'authorization';
@@ -174,23 +199,59 @@ export function can(
     }
 
     // -----------------------------------------------------------------------
-    case 'application_blinded': {
-      if (action !== 'view') {
-        return deny('blinded cards are read-only');
-      }
+    case 'application_file': {
       if (isMember(actor, resource.merchantOrgId)) {
-        return allow('merchant may see their own match card');
+        return action === 'view'
+          ? allow('merchant may see their own file')
+          : deny('the file view is read-only');
       }
-      if (
-        actor.orgType === 'provider' &&
-        resource.matchedProviderOrgIds.includes(actor.orgId)
-      ) {
-        // Identity fields are stripped at serialization, not here. This
-        // returns "may see the card"; what the card contains is the
-        // serializer's job and is tested separately.
-        return allow('provider was matched to this application');
+      if (actor.orgType === 'provider') {
+        // Founder decision, Sep 2026: visibility begins ONLY when the merchant
+        // grants access. Matched-but-unauthorized, revoked, and expired all
+        // land here identically and see nothing.
+        if (!resource.grants.some((g) => g.providerOrgId === actor.orgId)) {
+          return deny('no live authorization: providers see nothing before a grant');
+        }
+        return action === 'view'
+          ? allow('live grant covers this file')
+          : deny('providers may not modify a merchant file');
       }
-      return deny('provider was not matched to this application');
+      return deny('no rule permits this');
+    }
+
+    // -----------------------------------------------------------------------
+    case 'match': {
+      if (actor.orgType === 'provider') {
+        return deny('matching is internal; a match confers no visibility');
+      }
+      if (isMember(actor, resource.merchantOrgId) && action === 'view') {
+        return allow('merchant may see which funders were suggested');
+      }
+      if (actor.orgType === 'platform' && action === 'view') {
+        return allow('governance: match records are platform-visible');
+      }
+      return deny('no rule permits this');
+    }
+
+    // -----------------------------------------------------------------------
+    case 'application_grantees': {
+      if (isMember(actor, resource.merchantOrgId) && action === 'view') {
+        return allow('merchant may see who has access');
+      }
+      if (actor.orgType === 'platform' && action === 'view') {
+        return allow('governance: authorization records are platform-visible');
+      }
+      // Includes AUTHORIZED providers: a funder is never told how many others
+      // hold the file.
+      return deny('grantee list and count are merchant-only');
+    }
+
+    // -----------------------------------------------------------------------
+    case 'application_grade': {
+      if (actor.orgType === 'platform' && action === 'view') {
+        return allow('grading is internal to the platform');
+      }
+      return deny('grading is internal and never funder-facing');
     }
 
     // -----------------------------------------------------------------------

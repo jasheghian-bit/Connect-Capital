@@ -76,7 +76,11 @@ export const matches = pgTable(
      * remedy is completely different and the funder needs to know which.
      */
     suppressedReason: text('suppressed_reason'),
-    /** Provider clicked "interested" on the blinded card. */
+    /**
+     * DEPRECATED Sep 2026. Was set when a provider clicked "interested" on the
+     * pre-authorization card, which no longer exists. Column kept (append-only
+     * history); 0011 revokes the UPDATE grant so nothing writes it again.
+     */
     providerInterestedAt: timestamp('provider_interested_at', { withTimezone: true }),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   },

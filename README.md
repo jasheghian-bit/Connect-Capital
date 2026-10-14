@@ -3,14 +3,14 @@
 Trusted transaction infrastructure for small-business financing. MCA is the
 initial wedge.
 
-**Status: M0–M11 complete. 338 tests passing. Not yet wired to live
+**Status: M0–M11 complete. 326 tests (325 passing; 1 known bank-analysis renewal failure). Not yet wired to live
 infrastructure.**
 
 - M0 kernel — identity, permissions, audit
 - M1 merchant intake — prequal, application, documents, uploads
 - M2 provider — verification, criteria, appetite, decline taxonomy
-- M3 matching — grading, blinded cards, match runs, authorization
-- M4 provider workspace — blinded queue, view resolution, document requests
+- M3 matching — internal grading, match runs, authorization
+- M4 provider workspace — authorized-only queue, view resolution, document requests
 - M5 banking — metrics, position detection, renewal timing, re-eligibility
 - M6 messaging — scoped threads, contact-detail flagging, notification escalation
 - M7 underwriting — state machine, structured declines, merchant aggregation
@@ -85,6 +85,7 @@ psql $DATABASE_URL -f migrations/0007_offers.sql
 psql $DATABASE_URL -f migrations/0008_funding_fees.sql
 psql $DATABASE_URL -f migrations/0009_admin_security.sql
 psql $DATABASE_URL -f migrations/0010_privacy_compliance.sql
+psql $DATABASE_URL -f migrations/0011_no_preauth_visibility.sql
 npm run db:seed                   # TEST-labelled fixtures only
 npm test
 npm run preflight                 # verifies the guards are ACTUALLY applied
@@ -153,9 +154,16 @@ company makes to merchants:
 - **Never add a table without classifying it.** State, or evidence? Evidence
   gets `REVOKE UPDATE, DELETE` in the same migration that creates it.
 - **Never seed a verified provider.** The badge means a real KYB check ran.
-- **Never build a blinded card by deleting fields.** `lib/blinded.ts` constructs
-  from an allowlist so a newly added merchant field cannot leak by default. A
-  denylist fails open; that is the whole difference.
+- **Never show an unauthorized funder anything about a merchant.** Not a
+  blinded card, not industry, state, revenue, positions, amount, or grade —
+  nothing, and not even whether a file exists or that they were matched.
+  Visibility begins only when the merchant grants access, and revoked or
+  expired access returns to nothing. An authorized funder is never told how
+  many other funders hold the file, and grading (A–F) is internal only, used
+  to pick the suggested set. (Founder decision, Sep 2026; `resolveProviderView`
+  returns `{ kind: 'no_access' }` with no data, enforced again by 0011.) The
+  authorized file itself is built from an allowlist (`toFileSummary`), never
+  by deleting fields — a denylist fails open.
 - **Never let anything but a merchant grant an authorization.** Enforced in
   `policy.ts` and again by trigger in 0004.
 - **Never expose raw bank transactions to a provider.** They carry the
@@ -183,12 +191,12 @@ company makes to merchants:
   rejections.
 - **Never add a second way to load a merchant file.** `resolveProviderView` is
   the only path, and it returns identity only against a live grant. A separate
-  "full file" loader makes blinding depend on a developer's routing choice
+  "full file" loader makes what a funder sees depend on a developer's routing choice
   rather than on whether the merchant said yes.
 
 ### The deny suite is the specification
 
-`tests/policy.deny.test.ts` — 48 cases, most of them assertions that something
+`tests/policy.deny.test.ts` — 58 cases, most of them assertions that something
 is *refused*. Each maps to a claim made to a merchant or a funder. Deleting a
 case withdraws a promise.
 

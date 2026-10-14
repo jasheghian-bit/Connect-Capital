@@ -12,10 +12,11 @@ unattributable.
 
 **Controls**
 - `lib/policy.ts` — one `can()` function, deny by default, exhaustively tested
-- `lib/blinded.ts` — the pre-authorization card is built from an allowlist, so
-  a newly added merchant field cannot leak by default
-- `lib/provider-view.ts` — one resolver; identity requires a live grant
-- Postgres RLS as a backstop under all three
+- `lib/provider-view.ts` — one resolver; without a live grant a funder gets
+  `no_access` with no applicant data at all (Sep 2026). The authorized file is
+  built from an allowlist, so a newly added merchant field cannot leak by default
+- Migration 0011 — providers cannot read match rows or record pre-auth interest
+- Postgres RLS as a backstop under all of these
 - Deny suite: ~48 assertions that specific actors are refused
 
 **Residual risk.** A provider who is legitimately authorized and then behaves
@@ -91,7 +92,7 @@ Changing any of these silently breaks a promise made to a merchant.
 | Acting org from session, never from request | `lib/session.ts` |
 | Documents served only through the logged proxy | `lib/documents.ts` |
 | Every write inside `mutate()` with its audit row | `lib/audit.ts` |
-| Blinded card built from an allowlist | `lib/blinded.ts` |
+| Unauthorized funder sees nothing; authorized file built from an allowlist | `lib/provider-view.ts` + 0011 |
 | Timeline rendered from an allowlist | `lib/timeline.ts` |
 | Only a merchant grants authorization | `policy.ts` + trigger 0004 |
 | Verified requires a real KYB reference | CHECK constraint 0003 |

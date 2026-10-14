@@ -33,8 +33,8 @@ export interface SendResult {
  * Opens the thread for an authorized funder, or returns the existing one.
  *
  * Requires a live authorization. Without it there is no thread to open —
- * pre-authorization contact is exactly what the blinded card exists to
- * prevent, and a message channel would route straight around it.
+ * pre-authorization contact is exactly what showing funders nothing before
+ * a grant exists to prevent, and a message channel would route straight around it.
  */
 export async function ensureConversation(
   actor: Actor,

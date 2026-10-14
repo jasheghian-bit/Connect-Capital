@@ -40,6 +40,7 @@ const APPEND_ONLY = [
   'verification_events',
   'authorization_events',
   'match_runs',
+  'matches',
   'underwriting_states',
   'bank_transactions',
   'offer_revisions',
@@ -135,6 +136,32 @@ const checks: Check[] = [
         `);
         if (rows.rows.length > 0) {
           console.error('  RLS disabled on:', rows.rows.map((r) => r.tablename).join(', '));
+          return false;
+        }
+        return true;
+      }),
+  },
+  {
+    name: 'no pre-authorization visibility',
+    detail: '0011 — providers cannot read match rows or record "interest" (Sep 2026)',
+    run: async () =>
+      withSystem(async (tx) => {
+        const policies = await tx.execute(sql`
+          SELECT policyname FROM pg_policies
+          WHERE schemaname = 'public' AND tablename = 'matches'
+        `);
+        const names = policies.rows.map((r) => String(r.policyname));
+        if (names.includes('matches_visibility') || !names.includes('matches_visibility_no_provider')) {
+          console.error('  matches RLS still the 0004 policy:', names.join(', '));
+          return false;
+        }
+        const grants = await tx.execute(sql`
+          SELECT column_name FROM information_schema.column_privileges
+          WHERE grantee = 'app_user' AND table_name = 'matches'
+            AND privilege_type = 'UPDATE'
+        `);
+        if (grants.rows.length > 0) {
+          console.error('  app_user can still UPDATE matches columns:', grants.rows.map((r) => r.column_name));
           return false;
         }
         return true;

@@ -69,11 +69,34 @@ const application = (): Resource => ({
   status: 'in_underwriting',
 });
 
-const blindedCard = (matched: string[]): Resource => ({
-  kind: 'application_blinded',
+/**
+ * The funder-facing file. `grants` lists LIVE grants only — a matched,
+ * revoked, or expired provider is simply absent. There is no blinded card.
+ */
+const applicationFile = (liveGrants: string[]): Resource => ({
+  kind: 'application_file',
   id: APP_A,
   merchantOrgId: MERCHANT_A,
-  matchedProviderOrgIds: matched,
+  grants: liveGrants.map((providerOrgId) => ({ providerOrgId })),
+});
+
+const matchRow = (providerOrgId: string): Resource => ({
+  kind: 'match',
+  applicationId: APP_A,
+  merchantOrgId: MERCHANT_A,
+  providerOrgId,
+});
+
+const grantees = (): Resource => ({
+  kind: 'application_grantees',
+  applicationId: APP_A,
+  merchantOrgId: MERCHANT_A,
+});
+
+const grade = (): Resource => ({
+  kind: 'application_grade',
+  applicationId: APP_A,
+  merchantOrgId: MERCHANT_A,
 });
 
 const authorization = (providerOrgId: string): Resource => ({
@@ -283,27 +306,102 @@ const CASES: Case[] = [
     allowed: true,
   },
 
-  // --- Pre-authorization blinding -------------------------------------------
+  // --- Nothing before authorization (founder decision, Sep 2026) ----------
   {
-    claim: 'an unmatched provider cannot see the blinded card',
+    claim: 'an unmatched provider sees nothing about the file',
     actor: provider2,
     action: 'view',
-    resource: blindedCard([PROVIDER_1]),
+    resource: applicationFile([PROVIDER_1]),
     allowed: false,
   },
   {
-    claim: 'a matched provider can see the blinded card',
+    claim:
+      'a MATCHED but unauthorized provider sees nothing — no card, no summary, no fields',
     actor: provider1,
     action: 'view',
-    resource: blindedCard([PROVIDER_1]),
+    resource: applicationFile([]),
+    allowed: false,
+  },
+  {
+    claim: 'a REVOKED provider sees nothing about the file',
+    actor: provider1,
+    action: 'view',
+    // Revoked -> absent from live grants.
+    resource: applicationFile([PROVIDER_2]),
+    allowed: false,
+  },
+  {
+    claim: 'an EXPIRED grant sees nothing about the file',
+    actor: provider1,
+    action: 'view',
+    // Expired -> absent from live grants.
+    resource: applicationFile([]),
+    allowed: false,
+  },
+  {
+    claim: 'a provider cannot read its own match row — being matched is not visible',
+    actor: provider1,
+    action: 'view',
+    resource: matchRow(PROVIDER_1),
+    allowed: false,
+  },
+  {
+    claim: 'a provider cannot express interest on a match — there is no pre-auth action',
+    actor: provider1,
+    action: 'update',
+    resource: matchRow(PROVIDER_1),
+    allowed: false,
+  },
+  {
+    claim: 'an authorized provider sees the file once the merchant grants access',
+    actor: provider1,
+    action: 'view',
+    resource: applicationFile([PROVIDER_1]),
     allowed: true,
   },
   {
-    claim: 'blinded cards are read-only even for matched providers',
+    claim: 'even an authorized provider cannot modify the file',
     actor: provider1,
     action: 'update',
-    resource: blindedCard([PROVIDER_1]),
+    resource: applicationFile([PROVIDER_1]),
     allowed: false,
+  },
+  {
+    claim: 'an AUTHORIZED provider cannot learn how many other funders hold the file',
+    actor: provider1,
+    action: 'view',
+    resource: grantees(),
+    allowed: false,
+  },
+  {
+    claim: 'the merchant sees who holds access to their file',
+    actor: merchantA,
+    action: 'view',
+    resource: grantees(),
+    allowed: true,
+  },
+
+  // --- Grading is internal ---------------------------------------------------
+  {
+    claim: 'an authorized provider never sees the grade',
+    actor: provider1,
+    action: 'view',
+    resource: grade(),
+    allowed: false,
+  },
+  {
+    claim: 'an unauthorized provider never sees the grade',
+    actor: provider2,
+    action: 'view',
+    resource: grade(),
+    allowed: false,
+  },
+  {
+    claim: 'the platform uses the grade internally to pick the suggested set',
+    actor: platformPlain,
+    action: 'view',
+    resource: grade(),
+    allowed: true,
   },
 
   // --- Applications ----------------------------------------------------------

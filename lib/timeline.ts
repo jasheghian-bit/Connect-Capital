@@ -4,7 +4,7 @@
  * The merchant-facing rendering of the audit log, and the platform's closing
  * promise: what happened, in order, in plain language.
  *
- * ── ALLOWLIST, SAME AS THE BLINDED CARD ────────────────────────────────────
+ * ── ALLOWLIST, SAME AS THE FUNDER FILE SUMMARY ─────────────────────────────
  *
  * An audit event that has no entry in RENDERERS below does not appear. It is
  * not rendered generically, not labelled "activity", not shown with its raw
@@ -80,10 +80,8 @@ const RENDERERS: Record<string, Renderer> = {
     text: `You ended ${provider(e)}'s access.`,
     kind: 'access',
   }),
-  'provider.expressed_interest': (e) => ({
-    text: `${provider(e)} asked to see your file.`,
-    kind: 'access',
-  }),
+  // 'provider.expressed_interest' removed Sep 2026: funders see nothing
+  // before authorization, so there is no pre-auth interest to report.
 
   'document.uploaded': (e) => ({
     text: `You uploaded ${docLabel(e.metadata?.docType)}.`,

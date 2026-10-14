@@ -6,13 +6,18 @@
  * There is deliberately no "load the full file" function in this module for a
  * caller to reach for.
  *
+ * The queue lists ONLY applications this funder holds a live grant on
+ * (founder decision, Sep 2026). Matching is internal: a funder that was matched
+ * but not authorized has nothing in its queue and no way to learn the match
+ * happened. No grade, no match score, and no count of other grantees appear.
+ *
  * The queue's job is to be honest about what stage each file is at, because a
  * funder who cannot tell "waiting on me" from "waiting on the merchant" stops
  * working the queue within a week.
  */
 
 import { and, desc, eq, isNull, sql } from 'drizzle-orm';
-import { matches, authorizations } from '../db/matching';
+import { authorizations } from '../db/matching';
 import { applications, merchantBusinesses, financialProfiles, existingObligations } from '../db/merchant';
 import { documents, documentVersions, documentRequests } from '../db/documents';
 import { providers } from '../db/provider';
@@ -21,32 +26,29 @@ import { withActor, type Tx } from './db';
 import { authorize, type Actor } from './policy';
 import {
   resolveProviderView,
+  isGrantLive,
+  NO_ACCESS,
   type ActiveGrant,
   type DocumentSummary,
   type OpenRequest,
   type ProviderView,
 } from './provider-view';
-import type { FullApplicantRecord } from './blinded';
+import type { FullApplicantRecord } from './provider-view';
 
 export type QueueTab =
-  | 'new_matches'
   | 'authorized'
   | 'awaiting_merchant'
   | 'in_underwriting';
 
 export interface QueueItem {
   applicationId: string;
-  matchScore: number;
-  grade: string | null;
-  authorized: boolean;
-  interestedAt: Date | null;
   openRequests: number;
   lastActivityAt: Date;
   /**
    * Whose move it is. The single most useful column in the workspace and the
    * reason a funder keeps opening it.
    */
-  waitingOn: 'you' | 'merchant' | 'nobody';
+  waitingOn: 'you' | 'merchant';
 }
 
 export async function providerQueue(
@@ -57,40 +59,28 @@ export async function providerQueue(
   authorize(actor, 'view', { kind: 'organization', id: actor.orgId });
 
   return withActor(actor, async (tx) => {
+    // Driven from authorizations, not matches: a match without a grant must
+    // never produce a row. Filtered to this provider org's own live grants.
     const rows = await tx
       .select({
-        applicationId: matches.applicationId,
-        score: matches.score,
-        interestedAt: matches.providerInterestedAt,
-        matchedAt: matches.createdAt,
-        grade: applications.grade,
-        authId: authorizations.id,
-        authStatus: authorizations.status,
+        applicationId: authorizations.applicationId,
+        grantedAt: authorizations.grantedAt,
+        expiresAt: authorizations.expiresAt,
       })
-      .from(matches)
-      .innerJoin(applications, eq(applications.id, matches.applicationId))
-      .leftJoin(
-        authorizations,
-        and(
-          eq(authorizations.applicationId, matches.applicationId),
-          eq(authorizations.providerId, matches.providerId),
-          eq(authorizations.status, 'active'),
-        ),
-      )
+      .from(authorizations)
       .where(
         and(
-          eq(matches.providerId, providerId),
-          isNull(matches.suppressedReason),
-          sql`${matches.result} <> 'no_match'`,
+          eq(authorizations.providerId, providerId),
+          eq(authorizations.providerOrgId, actor.orgId),
+          eq(authorizations.status, 'active'),
+          sql`(${authorizations.expiresAt} IS NULL OR ${authorizations.expiresAt} > now())`,
         ),
       )
-      .orderBy(desc(matches.createdAt));
+      .orderBy(desc(authorizations.grantedAt));
 
     const items: QueueItem[] = [];
 
     for (const r of rows) {
-      const authorized = Boolean(r.authId);
-
       const [openReqs] = await tx
         .select({ n: sql<number>`count(*)::int` })
         .from(documentRequests)
@@ -106,82 +96,31 @@ export async function providerQueue(
 
       items.push({
         applicationId: r.applicationId,
-        matchScore: r.score,
-        grade: r.grade,
-        authorized,
-        interestedAt: r.interestedAt,
         openRequests,
-        lastActivityAt: r.matchedAt,
-        waitingOn: !authorized ? 'nobody' : openRequests > 0 ? 'merchant' : 'you',
+        lastActivityAt: r.grantedAt,
+        waitingOn: openRequests > 0 ? 'merchant' : 'you',
       });
     }
 
     return items.filter((i) => {
       switch (tab) {
-        case 'new_matches':
-          return !i.authorized;
         case 'authorized':
-          return i.authorized;
+          return true;
         case 'awaiting_merchant':
-          return i.authorized && i.waitingOn === 'merchant';
+          return i.waitingOn === 'merchant';
         case 'in_underwriting':
-          return i.authorized && i.waitingOn === 'you';
+          return i.waitingOn === 'you';
       }
     });
   });
 }
 
 /**
- * A funder signalling interest on a blinded card. Deliberately low-cost —
- * it is not a commitment, it just tells the merchant which funders want the
- * file, which is a useful trust signal at the authorization moment.
- *
- * Migration 0004 grants UPDATE on this single column and freezes the rest, so
- * a match result cannot be quietly rewritten under cover of this action.
- */
-export async function expressInterest(
-  actor: Actor,
-  providerId: string,
-  applicationId: string,
-  ctx: { ip?: string; userAgent?: string },
-): Promise<void> {
-  authorize(actor, 'view', { kind: 'organization', id: actor.orgId });
-
-  await mutate(
-    actor,
-    'view',
-    {
-      kind: 'application_blinded',
-      id: applicationId,
-      merchantOrgId: '',
-      matchedProviderOrgIds: [actor.orgId],
-    },
-    {
-      action: 'provider.expressed_interest',
-      objectType: 'application',
-      objectId: applicationId,
-      applicationId,
-    },
-    ctx,
-    async (tx) => {
-      await tx
-        .update(matches)
-        .set({ providerInterestedAt: new Date() })
-        .where(
-          and(eq(matches.providerId, providerId), eq(matches.applicationId, applicationId)),
-        );
-    },
-  );
-}
-
-/**
- * The one way a funder reads an application. Loads whatever grant exists —
- * including a revoked one — and hands it to the resolver. The resolver, not
- * this function, decides whether identity comes back.
- *
- * Passing the revoked grant through rather than filtering it out is
- * deliberate: the resolver can then distinguish "never authorized" from
- * "access ended", which the funder's screen needs to say something honest.
+ * The one way a funder reads an application. Looks up this org's latest
+ * grant FIRST and returns `no_access` before touching any applicant row when
+ * there is none — so an unauthorized request does not even load the record,
+ * and "no such application" is indistinguishable from "not authorized".
+ * The resolver still makes the final call (revoked / expired / scope).
  */
 export async function loadApplicationView(
   actor: Actor,
@@ -190,8 +129,6 @@ export async function loadApplicationView(
   authorize(actor, 'view', { kind: 'organization', id: actor.orgId });
 
   return withActor(actor, async (tx) => {
-    const record = await loadApplicantRecord(tx, applicationId);
-
     const [auth] = await tx
       .select()
       .from(authorizations)
@@ -213,6 +150,9 @@ export async function loadApplicationView(
         }
       : null;
 
+    if (!isGrantLive(grant)) return NO_ACCESS;
+
+    const record = await loadApplicantRecord(tx, applicationId);
     const docs = await loadDocumentSummaries(tx, applicationId);
     const reqs = await loadOpenRequests(tx, applicationId, actor.orgId);
 

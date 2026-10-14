@@ -4,8 +4,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Eye,
-  EyeOff,
   FileText,
+  Inbox,
   Landmark,
   Lock,
   ShieldCheck,
@@ -22,8 +22,10 @@ import {
   see what, and when" — this is that thesis made clickable.
 
   Watch step 3. The merchant authorizes Harbor Point and not Ridgeline. From
-  that moment Harbor Point sees a business name and a phone number; Ridgeline
-  sees industry, state, and numbers, and never learns who the merchant is.
+  that moment Harbor Point sees the file. Ridgeline sees NOTHING — before or
+  after step 3 — not a blinded card, not industry, state, or numbers, and not
+  even that this merchant applied or that Ridgeline was matched (founder
+  decision, Sep 2026). Matching and grading are internal to the platform.
 */
 
 const VIEWS = [
@@ -48,7 +50,7 @@ const STEPS = [
   },
   {
     t: "Funder reviews",
-    note: "Harbor Point sees identity and documents. Ridgeline still sees a blinded card.",
+    note: "Harbor Point sees identity and documents. Ridgeline sees nothing at all — not even that this file exists.",
   },
   {
     t: "Document requested",
@@ -312,7 +314,7 @@ function HarborView({ step }) {
   return (
     <Desk name="Harbor Point Capital" verified>
       {!authorized ? (
-        <BlindedBody step={step} />
+        <NothingBody />
       ) : (
         <div className="p-4">
           <div className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 p-3">
@@ -418,49 +420,18 @@ function HarborView({ step }) {
   );
 }
 
-function BlindedBody({ step }) {
+/*
+  What every unauthorized funder sees: an empty workspace. Identical whether
+  the funder was matched, not matched, or had access revoked — the screen
+  itself must not hint that this merchant exists.
+*/
+function NothingBody() {
   return (
-    <div className="p-4">
-      <div className="mb-4 flex items-start gap-2.5 rounded-xl border border-slate-200 bg-slate-50 p-3">
-        <EyeOff size={16} className="mt-0.5 shrink-0 text-slate-500" />
-        <div>
-          <div className="text-sm text-slate-900">
-            {step < 2
-              ? "Awaiting merchant authorization"
-              : "The merchant chose other funders"}
-          </div>
-          <div className="mt-0.5 text-xs text-slate-500">
-            Name, address, owner, and contact stay hidden. Everything below is
-            enough to decide whether you want the file.
-          </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-x-8">
-        <div>
-          <Row label="Industry" value="Auto repair" />
-          <Row label="Location" value="Monmouth Cty, NJ" />
-          <Row label="Time in business" value="4 yrs" />
-          <Row label="Requested" value={money(120000)} />
-        </div>
-        <div>
-          <Row label="Monthly revenue" value={money(95400)} />
-          <Row label="Negative days" value="2" />
-          <Row label="Open positions" value="1" />
-          <Row label="Payment burden" value="33%" />
-        </div>
-      </div>
-
-      <div className="mt-4 grid grid-cols-2 gap-3">
-        {["Business name", "Owner", "Phone", "Documents"].map((f) => (
-          <div
-            key={f}
-            className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-2.5 py-1.5 text-xs text-slate-500"
-          >
-            <Lock size={11} /> {f}
-          </div>
-        ))}
-      </div>
+    <div className="px-4 py-16 text-center">
+      <Inbox size={24} className="mx-auto mb-3 text-slate-500" />
+      <p className="text-sm text-slate-700">
+        No files yet. You'll see a file here once a merchant gives you access.
+      </p>
     </div>
   );
 }
@@ -579,7 +550,7 @@ export default function TransactionWalkthrough() {
           {view === "harbor" && <HarborView step={step} />}
           {view === "ridgeline" && (
             <Desk name="Ridgeline Funding Group" verified>
-              <BlindedBody step={step} />
+              <NothingBody />
             </Desk>
           )}
           {view === "system" && <SystemView step={step} />}

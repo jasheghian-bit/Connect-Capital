@@ -98,10 +98,10 @@ describe('rapid declines point at the platform, not the funder', () => {
     expect(has({ ...GOOD, declinesIssued: 20, declinesWithinOneHour: 18 }, 'rapid_decline')).toBe(true);
   });
 
-  it('suggests checking the blinded card first', () => {
+  it('suggests checking match precision first', () => {
     const a = { ...GOOD, declinesIssued: 20, declinesWithinOneHour: 18 };
     const f = detectAnomalies(a).find((x) => x.type === 'rapid_decline');
-    expect(f.suggestedAction.toLowerCase().includes('blinded card')).toBe(true);
+    expect(f.suggestedAction.toLowerCase().includes('match precision')).toBe(true);
   });
 });
 

@@ -6,7 +6,7 @@
  * must never see — refused access attempts naming a provider that was probing
  * them, admin elevation reasons referencing a dispute.
  *
- * Same failure mode as the blinded card: a leak here is silent and permanent.
+ * Same failure mode as any funder-facing view: a leak here is silent and permanent.
  *
  *   npx tsx tests/timeline.test.ts
  */

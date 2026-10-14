@@ -363,6 +363,8 @@ Every request resolves to `(actor_user, actor_org, actor_role, resource, action)
   **The legitimate identity needs at triage are solved with hashing, not disclosure.** Funders have three real reasons to want a name early: is this merchant already in my pipeline from an ISO, are they on my do-not-fund list, and have they defaulted on me before. All three are answerable by exchanging salted hashes of business identifiers — the platform flags *"already in your pipeline"* or *"matches your exclusion list"* without either side revealing the merchant. Build this; it removes the strongest legitimate argument for pre-authorization disclosure.
 
   **Instrument the card's quality.** Post-authorization decline rate is the measure of whether the blinded card is rich enough. A funder that accepts blind, receives the file, and declines on facts that should have been on the card has wasted its own cycles and handed the merchant a bad experience. If that rate runs high, add fields — do not add identity.
+
+  > **Superseded Sep 2026 (founder decision, binding):** there is no blinded card. A matched-but-unauthorized funder sees **nothing** — no industry, state, revenue, positions, amount, grade, or any other field, and is not told the file exists or that it was matched. Visibility begins only when the merchant grants access; revoked or expired access returns to nothing. There is no pre-authorization queue and no "express interest" action. An authorized funder is not told how many other funders hold the file. Grading (A–F) is internal only, used to pick the suggested set, and is never funder-facing. Post-funding blind *position* visibility on a later reapplication is unchanged. Implemented in `lib/provider-view.ts` (`no_access`), `lib/policy.ts`, and migration 0011. The table and reasoning above are kept as history.
 - Post-authorization, sees exactly what the authorization scope grants — and nothing beyond it
 - Sees only its own org's offers and its own conversations
 - Access ends on revocation, expiry, or application close, with a configurable read-only grace window for records it acted on
@@ -726,6 +728,8 @@ Company        Criteria editor (versioned) · appetite toggle ·
                representatives · registrations · agreements · fee schedule
 ```
 
+> **Superseded Sep 2026:** the provider queue has no "New matches (blinded)" tab, no blinded card, no Express interest action, and no grade filter or column. The queue lists only files with a live authorization; with none, it is empty. See the Provider representative note above.
+
 Note the **appetite toggle** — a one-click "we're paused on restaurants this week." Cheap to build, and it directly addresses the stale-criteria failure mode in A.2.
 
 ### G.3 Funding Specialist
@@ -764,7 +768,7 @@ Assumes founder + 1–2 engineers with heavy AI assistance. Weeks are estimates,
 | M1 | **Merchant intake** | Registration, business profile, MCA application wizard, document vault w/ versioning, proxied+logged delivery | 2 |
 | M2 | **Provider & verification** | Provider org, reps, criteria editor, appetite, registrations, admin verification queue | 2 |
 | M3 | **Matching + authorization** | Rules engine, versioned rulesets, match reasons, grading, jurisdictional gate, authorization + consent flow, Access Center | 2 |
-| M4 | **Provider workspace** | Blinded queue, authorized detail, watermarked doc viewer, document requests | 2 |
+| M4 | **Provider workspace** | Blinded queue (superseded Sep 2026: authorized-only queue), authorized detail, watermarked doc viewer, document requests | 2 |
 | M5 | **Messaging** | Scoped conversations, notifications, in-app + email | 1–2 |
 | M6 | **Underwriting** | State machine, structured decline reasons, merchant-facing aggregation | 1 |
 | M7 | **Offers & negotiation** | Offer builder, disclosure engine + rulesets, revisions, counters, best-and-final, comparison UI | 3 |

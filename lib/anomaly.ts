@@ -159,8 +159,9 @@ const RULES: Array<(a: ProviderActivity) => Finding | null> = [
   },
 
   /**
-   * Declining within an hour of access, repeatedly. Either the blinded card is
-   * too thin — a platform problem — or the funder is opening files without
+   * Declining within an hour of access, repeatedly. Funders see nothing before
+   * authorization (Sep 2026), so either the suggested set is too wide — stale
+   * criteria or appetite, a platform problem — or the funder is opening files without
    * intending to work them.
    */
   (a) => {
@@ -179,7 +180,7 @@ const RULES: Array<(a: ProviderActivity) => Finding | null> = [
         rate: Math.round(rapid * 100) / 100,
       },
       suggestedAction:
-        'Check the blinded card first. If funders can only tell after authorization, the card is missing fields.',
+        'Check match precision first: the suggested set may be wider than this funder actually buys. Refresh their criteria and appetite before talking to them.',
     };
   },
 

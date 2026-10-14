@@ -6,10 +6,8 @@ import {
   ChevronLeft,
   Clock,
   Eye,
-  EyeOff,
   FileText,
   Inbox,
-  Lock,
   Send,
   TrendingUp,
   TriangleAlert,
@@ -18,24 +16,30 @@ import {
 /*
   CapNet — provider workspace, clickable prototype.
 
-  ALL DATA IS MOCK. Shapes mirror lib/provider-view.ts, which is the module
-  that actually decides blinded vs. full in production.
+  ALL DATA IS MOCK (test fixtures, not real merchants). Shapes mirror
+  lib/provider-view.ts, which decides full file vs. no_access in production.
 
-  The point of this screen: a funder in the queue sees enough to decide whether
-  they want the file, and cannot identify or contact the merchant until the
-  merchant says yes. Toggle "authorized" on any file to watch identity appear.
+  Founder decision, Sep 2026: a funder sees NOTHING about a merchant until the
+  merchant grants access — no blinded card, no industry, state, revenue, or
+  grade, no "express interest". The queue lists only authorized files; with
+  none, it is empty. Revoking access removes the file entirely. Grades are
+  internal and never shown here, and the funder is not told how many other
+  funders hold the file.
+
+  The "Demo:" buttons simulate the MERCHANT's actions so the screen can be
+  walked through; a real funder has no such control.
 
   Desktop-oriented. Funders work at a desk; merchants work from a phone.
 */
 
+// MOCK. `authorized` stands in for a live grant. Unauthorized entries exist
+// only so the demo can simulate a merchant granting access; they are never
+// rendered, counted, or hinted at on the funder's screen.
 const QUEUE = [
   {
     id: "app_1",
-    grade: "B",
-    score: 88,
     authorized: false,
-    interested: false,
-    waitingOn: "nobody",
+    waitingOn: "you",
     industry: "Auto repair",
     naics: "811111",
     location: "Monmouth County, NJ",
@@ -55,19 +59,16 @@ const QUEUE = [
     creditBand: "fair",
     priorDeclines: 2,
     identityHash: "a91f3c0e",
-    legalName: "Northshore Auto Repair LLC",
+    legalName: "Northshore Auto Repair LLC (test)",
     dba: "Northshore Auto",
     street: "418 Sycamore Ave, Neptune NJ 07753",
     phone: "(732) 555-0100",
     email: "dana@northshoreauto.com",
-    owner: "Dana Whitfield",
+    owner: "Dana Whitfield (test)",
   },
   {
     id: "app_2",
-    grade: "A",
-    score: 96,
     authorized: true,
-    interested: true,
     waitingOn: "you",
     industry: "Freight trucking",
     naics: "484121",
@@ -88,20 +89,17 @@ const QUEUE = [
     creditBand: "good",
     priorDeclines: 0,
     identityHash: "3f7b21ce",
-    legalName: "Kestrel Logistics Inc",
+    legalName: "Kestrel Logistics Inc (test)",
     dba: "Kestrel Freight",
     street: "22 Wheeler Rd, Edison NJ 08817",
     phone: "(908) 555-0142",
     email: "ops@kestrelfreight.com",
-    owner: "Marcus Ilagan",
+    owner: "Marcus Ilagan (test)",
   },
   {
     id: "app_3",
-    grade: "D",
-    score: 41,
     authorized: false,
-    interested: false,
-    waitingOn: "nobody",
+    waitingOn: "you",
     industry: "Full-service restaurant",
     naics: "722511",
     location: "Bergen County, NJ",
@@ -121,12 +119,12 @@ const QUEUE = [
     creditBand: "poor",
     priorDeclines: 4,
     identityHash: "c02e9a41",
-    legalName: "Harborview Kitchen LLC",
+    legalName: "Harborview Kitchen LLC (test)",
     dba: "Harborview",
     street: "9 Dock St, Edgewater NJ 07020",
     phone: "(201) 555-0188",
     email: "info@harborviewkitchen.com",
-    owner: "Priya Raghunathan",
+    owner: "Priya Raghunathan (test)",
   },
 ];
 
@@ -137,24 +135,6 @@ function Mono({ children, className = "" }) {
   return (
     <span className={`font-mono tabular-nums tracking-tight ${className}`}>
       {children}
-    </span>
-  );
-}
-
-function GradePill({ grade }) {
-  const tone =
-    grade === "A"
-      ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-      : grade === "B"
-      ? "bg-slate-100 text-slate-700 border-slate-200"
-      : grade === "C"
-      ? "bg-amber-50 text-amber-800 border-amber-200"
-      : "bg-rose-50 text-rose-700 border-rose-200";
-  return (
-    <span
-      className={`inline-flex h-6 w-6 items-center justify-center rounded border text-xs ${tone}`}
-    >
-      {grade}
     </span>
   );
 }
@@ -180,8 +160,6 @@ function QueueRow({ item, onOpen }) {
       onClick={() => onOpen(item)}
       className="flex w-full items-center gap-4 border-b border-slate-100 px-5 py-3 text-left hover:bg-slate-50"
     >
-      <GradePill grade={item.grade} />
-
       <span className="w-52 shrink-0">
         <span className="block text-sm text-slate-900">{item.industry}</span>
         <span className="block text-xs text-slate-500">{item.location}</span>
@@ -219,44 +197,11 @@ function QueueRow({ item, onOpen }) {
       </span>
 
       <span className="ml-auto shrink-0">
-        {item.authorized ? (
-          <span className="inline-flex items-center gap-1.5 rounded bg-emerald-50 px-2 py-1 text-[11px] text-emerald-700">
-            <Eye size={12} /> Authorized
-          </span>
-        ) : (
-          <span className="inline-flex items-center gap-1.5 rounded bg-slate-100 px-2 py-1 text-[11px] text-slate-500">
-            <EyeOff size={12} /> Blinded
-          </span>
-        )}
+        <span className="inline-flex items-center gap-1.5 rounded bg-emerald-50 px-2 py-1 text-[11px] text-emerald-700">
+          <Eye size={12} /> Authorized
+        </span>
       </span>
     </button>
-  );
-}
-
-function BlindedBanner({ interested, onInterest }) {
-  return (
-    <div className="mb-5 flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
-      <Lock size={18} className="mt-0.5 shrink-0 text-slate-500" />
-      <div className="flex-1">
-        <p className="text-sm text-slate-900">Awaiting merchant authorization</p>
-        <p className="mt-1 text-xs leading-relaxed text-slate-500">
-          Business name, address, owner, and contact stay hidden until the
-          merchant grants you access. Everything below is enough to decide
-          whether you want the file.
-        </p>
-      </div>
-      <button
-        onClick={onInterest}
-        disabled={interested}
-        className={`shrink-0 rounded-lg px-3 py-2 text-xs ${
-          interested
-            ? "bg-slate-100 text-slate-500"
-            : "border border-slate-300 text-slate-700 hover:bg-white"
-        }`}
-      >
-        {interested ? "Interest sent" : "Express interest"}
-      </button>
-    </div>
   );
 }
 
@@ -301,19 +246,14 @@ function FileView({ item, onBack, onToggle }) {
           onClick={onToggle}
           className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs text-slate-600"
         >
-          Demo: {item.authorized ? "revoke" : "grant"} authorization
+          Demo: merchant revokes access
         </button>
       </div>
 
       <div className="px-5 py-5">
-        {item.authorized ? (
-          <IdentityPanel item={item} />
-        ) : (
-          <BlindedBanner interested={item.interested} onInterest={() => {}} />
-        )}
+        <IdentityPanel item={item} />
 
         <div className="mb-5 flex items-center gap-3">
-          <GradePill grade={item.grade} />
           <div>
             <div className="text-lg tracking-tight text-slate-900">
               {item.industry}
@@ -396,7 +336,7 @@ function FileView({ item, onBack, onToggle }) {
             <span className="flex items-center gap-2 text-sm text-slate-900">
               <FileText size={15} className="text-slate-500" /> Documents
             </span>
-            {item.authorized && (
+            {(
               <button
                 onClick={() => setRequested(true)}
                 disabled={requested}
@@ -411,7 +351,7 @@ function FileView({ item, onBack, onToggle }) {
             )}
           </div>
 
-          {item.authorized ? (
+          {(
             <div className="divide-y divide-slate-100">
               {[
                 { t: "Government ID", m: "v1 · uploaded Aug 17" },
@@ -423,15 +363,11 @@ function FileView({ item, onBack, onToggle }) {
                 </div>
               ))}
               <div className="flex items-center gap-2 px-4 py-3">
-                <Ban size={14} className="text-slate-300" />
+                <Ban size={14} className="text-slate-500" />
                 <span className="text-xs text-slate-500">
                   2 documents outside your authorization scope
                 </span>
               </div>
-            </div>
-          ) : (
-            <div className="px-4 py-6 text-center text-xs text-slate-500">
-              Documents unlock when the merchant authorizes you.
             </div>
           )}
         </div>
@@ -443,40 +379,58 @@ function FileView({ item, onBack, onToggle }) {
 export default function ProviderWorkspace() {
   const [items, setItems] = useState(QUEUE);
   const [openId, setOpenId] = useState(null);
-  const [tab, setTab] = useState("new_matches");
+  const [tab, setTab] = useState("authorized");
 
-  const open = items.find((i) => i.id === openId);
+  // Only authorized files exist as far as the funder's screen is concerned.
+  const visible = items.filter((i) => i.authorized);
+  const open = visible.find((i) => i.id === openId);
 
-  const toggle = (id) =>
-    setItems((prev) =>
-      prev.map((i) => (i.id === id ? { ...i, authorized: !i.authorized } : i))
-    );
+  const setAuth = (id, authorized) =>
+    setItems((prev) => prev.map((i) => (i.id === id ? { ...i, authorized } : i)));
+
+  const revoke = (id) => {
+    setAuth(id, false);
+    setOpenId(null);
+  };
+  const nextUnauthorized = items.find((i) => !i.authorized);
+  const revokeAll = () => {
+    setItems((prev) => prev.map((i) => ({ ...i, authorized: false })));
+    setOpenId(null);
+  };
 
   const tabs = [
-    { id: "new_matches", label: "New matches", n: items.filter((i) => !i.authorized).length },
-    { id: "authorized", label: "Authorized", n: items.filter((i) => i.authorized).length },
-    { id: "in_underwriting", label: "Needs you", n: items.filter((i) => i.authorized && i.waitingOn === "you").length },
+    { id: "authorized", label: "Authorized", n: visible.length },
+    { id: "in_underwriting", label: "Needs you", n: visible.filter((i) => i.waitingOn === "you").length },
+    { id: "awaiting_merchant", label: "Waiting on merchant", n: visible.filter((i) => i.waitingOn === "merchant").length },
   ];
 
-  const shown = items.filter((i) =>
-    tab === "new_matches"
-      ? !i.authorized
-      : tab === "authorized"
-      ? i.authorized
-      : i.authorized && i.waitingOn === "you"
+  const shown = visible.filter((i) =>
+    tab === "authorized" ? true : tab === "in_underwriting" ? i.waitingOn === "you" : i.waitingOn === "merchant"
   );
 
   return (
     <div className="min-h-screen bg-slate-100 p-6">
-      <p className="mx-auto mb-4 max-w-5xl text-xs text-slate-500">
-        Prototype · mock data · toggle authorization inside a file to see
-        identity appear
-      </p>
+      <div className="mx-auto mb-4 flex max-w-5xl flex-wrap items-center gap-2 text-xs text-slate-500">
+        <span>Prototype · mock data (test) · demo buttons simulate the merchant</span>
+        <button
+          onClick={() => nextUnauthorized && setAuth(nextUnauthorized.id, true)}
+          disabled={!nextUnauthorized}
+          className="ml-auto rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-slate-700 disabled:text-slate-500"
+        >
+          Demo: a merchant grants access
+        </button>
+        <button
+          onClick={revokeAll}
+          className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-slate-700"
+        >
+          Demo: no files authorized
+        </button>
+      </div>
 
       <div className="mx-auto max-w-5xl overflow-hidden rounded-2xl border border-slate-300 bg-white">
         <div className="flex items-center gap-3 border-b border-slate-200 px-5 py-4">
           <Building2 size={18} className="text-slate-500" />
-          <span className="text-sm text-slate-900">Harbor Point Capital</span>
+          <span className="text-sm text-slate-900">Harbor Point Capital (test)</span>
           <span className="inline-flex items-center gap-1 rounded bg-emerald-50 px-2 py-0.5 text-[11px] text-emerald-700">
             <BadgeCheck size={12} /> Verified
           </span>
@@ -489,8 +443,15 @@ export default function ProviderWorkspace() {
           <FileView
             item={open}
             onBack={() => setOpenId(null)}
-            onToggle={() => toggle(open.id)}
+            onToggle={() => revoke(open.id)}
           />
+        ) : visible.length === 0 ? (
+          <div className="px-5 py-20 text-center">
+            <Inbox size={26} className="mx-auto mb-3 text-slate-500" />
+            <p className="text-sm text-slate-700">
+              No files yet. You'll see a file here once a merchant gives you access.
+            </p>
+          </div>
         ) : (
           <>
             <div className="flex gap-1 border-b border-slate-200 px-5">
@@ -512,8 +473,8 @@ export default function ProviderWorkspace() {
 
             {shown.length === 0 ? (
               <div className="px-5 py-16 text-center">
-                <Inbox size={26} className="mx-auto mb-3 text-slate-300" />
-                <p className="text-sm text-slate-500">Nothing here right now.</p>
+                <Inbox size={26} className="mx-auto mb-3 text-slate-500" />
+                <p className="text-sm text-slate-500">Nothing in this tab right now.</p>
               </div>
             ) : (
               shown.map((i) => (

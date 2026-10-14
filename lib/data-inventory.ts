@@ -10,9 +10,11 @@
  * is collected "in case it is useful later": data minimization means each
  * field names the purpose that justifies it.
  *
- * Funder visibility is always AFTER merchant authorization (see policy.ts and
- * blinded.ts). `funder_after_authorization` here is a description, not the
- * enforcement — the enforcement is the allowlist in blinded.ts and RLS.
+ * Funder visibility is always AFTER merchant authorization, and before it a
+ * funder sees nothing at all (see policy.ts and provider-view.ts).
+ * `funder_after_authorization` here is a description, not the enforcement —
+ * the enforcement is resolveProviderView's allowlist, policy.ts, and RLS
+ * (migration 0011).
  */
 
 export type Visibility =

@@ -21,7 +21,7 @@
  */
 
 import { and, eq } from 'drizzle-orm';
-import { authorizations, authorizationEvents, matches } from '../db/matching';
+import { authorizations, authorizationEvents } from '../db/matching';
 import { consents } from '../db/kernel';
 import { providers } from '../db/provider';
 import { mutate } from './audit';
@@ -284,24 +284,7 @@ export async function accessCenter(actor: Actor, applicationId: string) {
   );
 }
 
-/** A provider's queue of blinded cards it has been matched to. */
-export async function providerMatchQueue(actor: Actor, providerId: string) {
-  return withActor(actor, (tx) =>
-    tx
-      .select({
-        applicationId: matches.applicationId,
-        result: matches.result,
-        score: matches.score,
-        interestedAt: matches.providerInterestedAt,
-        createdAt: matches.createdAt,
-      })
-      .from(matches)
-      .where(
-        and(
-          eq(matches.providerId, providerId),
-          eq(matches.result, 'match'),
-        ),
-      )
-      .orderBy(matches.createdAt),
-  );
-}
+// providerMatchQueue (a provider's list of matches it had not yet been
+// authorized on) was removed Sep 2026: matching is internal, and a funder sees
+// only files a merchant has authorized — see providerQueue in
+// provider-workspace.ts, which is driven from live authorizations.
