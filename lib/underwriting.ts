@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Underwriting
+ * CapNet — Underwriting
  *
  * Thin service over the pure state machine in lib/underwriting-state.ts.
  * Transitions are validated there; this persists them and decides what the

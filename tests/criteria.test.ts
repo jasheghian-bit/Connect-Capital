@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Criteria evaluation tests
+ * CapNet — Criteria evaluation tests
  *
  * This logic decides which funders a merchant sees and what reason they're
  * given. A wrong answer here is not a crash — it's a merchant quietly not

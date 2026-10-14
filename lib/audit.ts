@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Audit spine
+ * CapNet — Audit spine
  *
  * The rule from the architecture doc: an audit row is written inside the same
  * transaction as the change it records. An audit write that can commit

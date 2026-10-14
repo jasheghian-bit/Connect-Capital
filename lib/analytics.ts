@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Hypothesis scorecard
+ * CapNet — Hypothesis scorecard
  *
  * The founder brief names ten hypotheses and asks that the software make them
  * measurable. This module is that instrument.

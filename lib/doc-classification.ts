@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Document classification
+ * CapNet — Document classification
  *
  * Deliberately dependency-free. This module decides which documents fall under
  * the separate raw-statement consent, and that rule needs to be testable

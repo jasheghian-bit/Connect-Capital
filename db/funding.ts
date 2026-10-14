@@ -1,9 +1,9 @@
 /**
- * Connect Capital — M9 Funding and fees schema
+ * CapNet — M9 Funding and fees schema
  *
  * ── THE PLATFORM DOES NOT TOUCH THE MONEY ──────────────────────────────────
  *
- * The funder wires the merchant directly. Connect Capital records that it
+ * The funder wires the merchant directly. CapNet records that it
  * happened and invoices its fee. That single decision removes money
  * transmitter licensing in roughly fifty jurisdictions, and it is a product
  * choice rather than a gap — nothing in this file moves funds.

@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Matching engine
+ * CapNet — Matching engine
  *
  * Assembly, not new logic. Grading and criteria evaluation are pure, tested,
  * and live elsewhere; this decides the ORDER things are checked in and what
@@ -29,7 +29,7 @@
  * ── NARROW BEATS BROAD ─────────────────────────────────────────────────────
  *
  * A D-paper merchant shown twelve funders wastes eleven underwriters' time and
- * teaches all of them that Connect Capital sends junk. Match precision is a
+ * teaches all of them that CapNet sends junk. Match precision is a
  * funder-retention feature, so results are capped and ranked.
  */
 

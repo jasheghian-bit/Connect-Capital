@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 
 /*
-  Connect Capital — provider workspace, clickable prototype.
+  CapNet — provider workspace, clickable prototype.
 
   ALL DATA IS MOCK. Shapes mirror lib/provider-view.ts, which is the module
   that actually decides blinded vs. full in production.
@@ -162,7 +162,7 @@ function GradePill({ grade }) {
 function Stat({ label, value, warn = false }) {
   return (
     <div>
-      <div className="text-[11px] uppercase tracking-widest text-slate-400">
+      <div className="text-[11px] uppercase tracking-widest text-slate-500">
         {label}
       </div>
       <Mono
@@ -193,7 +193,7 @@ function QueueRow({ item, onOpen }) {
 
       <span className="w-28 shrink-0">
         <Mono className="text-sm text-slate-600">{money(item.revenue)}</Mono>
-        <span className="block text-[11px] text-slate-400">monthly rev</span>
+        <span className="block text-[11px] text-slate-500">monthly rev</span>
       </span>
 
       <span className="w-20 shrink-0">
@@ -204,7 +204,7 @@ function QueueRow({ item, onOpen }) {
         >
           {item.positions}
         </Mono>
-        <span className="block text-[11px] text-slate-400">positions</span>
+        <span className="block text-[11px] text-slate-500">positions</span>
       </span>
 
       <span className="w-20 shrink-0">
@@ -215,7 +215,7 @@ function QueueRow({ item, onOpen }) {
         >
           {pct(item.ptr)}
         </Mono>
-        <span className="block text-[11px] text-slate-400">pmt/rev</span>
+        <span className="block text-[11px] text-slate-500">pmt/rev</span>
       </span>
 
       <span className="ml-auto shrink-0">
@@ -236,7 +236,7 @@ function QueueRow({ item, onOpen }) {
 function BlindedBanner({ interested, onInterest }) {
   return (
     <div className="mb-5 flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
-      <Lock size={18} className="mt-0.5 shrink-0 text-slate-400" />
+      <Lock size={18} className="mt-0.5 shrink-0 text-slate-500" />
       <div className="flex-1">
         <p className="text-sm text-slate-900">Awaiting merchant authorization</p>
         <p className="mt-1 text-xs leading-relaxed text-slate-500">
@@ -250,7 +250,7 @@ function BlindedBanner({ interested, onInterest }) {
         disabled={interested}
         className={`shrink-0 rounded-lg px-3 py-2 text-xs ${
           interested
-            ? "bg-slate-100 text-slate-400"
+            ? "bg-slate-100 text-slate-500"
             : "border border-slate-300 text-slate-700 hover:bg-white"
         }`}
       >
@@ -350,7 +350,7 @@ function FileView({ item, onBack, onToggle }) {
         <div className="mb-5 grid grid-cols-2 gap-4">
           <div className="rounded-xl border border-slate-200 p-4">
             <div className="mb-3 flex items-center gap-2 text-sm text-slate-900">
-              <TrendingUp size={15} className="text-slate-400" /> Existing
+              <TrendingUp size={15} className="text-slate-500" /> Existing
               positions
             </div>
             {item.positions === 0 ? (
@@ -394,7 +394,7 @@ function FileView({ item, onBack, onToggle }) {
         <div className="rounded-xl border border-slate-200">
           <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
             <span className="flex items-center gap-2 text-sm text-slate-900">
-              <FileText size={15} className="text-slate-400" /> Documents
+              <FileText size={15} className="text-slate-500" /> Documents
             </span>
             {item.authorized && (
               <button
@@ -402,7 +402,7 @@ function FileView({ item, onBack, onToggle }) {
                 disabled={requested}
                 className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs ${
                   requested
-                    ? "bg-slate-100 text-slate-400"
+                    ? "bg-slate-100 text-slate-500"
                     : "border border-slate-300 text-slate-700"
                 }`}
               >
@@ -419,18 +419,18 @@ function FileView({ item, onBack, onToggle }) {
               ].map((d) => (
                 <div key={d.t} className="flex items-center justify-between px-4 py-3">
                   <span className="text-sm text-slate-700">{d.t}</span>
-                  <span className="text-xs text-slate-400">{d.m}</span>
+                  <span className="text-xs text-slate-500">{d.m}</span>
                 </div>
               ))}
               <div className="flex items-center gap-2 px-4 py-3">
                 <Ban size={14} className="text-slate-300" />
-                <span className="text-xs text-slate-400">
+                <span className="text-xs text-slate-500">
                   2 documents outside your authorization scope
                 </span>
               </div>
             </div>
           ) : (
-            <div className="px-4 py-6 text-center text-xs text-slate-400">
+            <div className="px-4 py-6 text-center text-xs text-slate-500">
               Documents unlock when the merchant authorizes you.
             </div>
           )}
@@ -468,14 +468,14 @@ export default function ProviderWorkspace() {
 
   return (
     <div className="min-h-screen bg-slate-100 p-6">
-      <p className="mx-auto mb-4 max-w-5xl text-xs text-slate-400">
+      <p className="mx-auto mb-4 max-w-5xl text-xs text-slate-500">
         Prototype · mock data · toggle authorization inside a file to see
         identity appear
       </p>
 
       <div className="mx-auto max-w-5xl overflow-hidden rounded-2xl border border-slate-300 bg-white">
         <div className="flex items-center gap-3 border-b border-slate-200 px-5 py-4">
-          <Building2 size={18} className="text-slate-400" />
+          <Building2 size={18} className="text-slate-500" />
           <span className="text-sm text-slate-900">Harbor Point Capital</span>
           <span className="inline-flex items-center gap-1 rounded bg-emerald-50 px-2 py-0.5 text-[11px] text-emerald-700">
             <BadgeCheck size={12} /> Verified
@@ -505,7 +505,7 @@ export default function ProviderWorkspace() {
                   }`}
                 >
                   {t.label}
-                  <span className="ml-1.5 text-xs text-slate-400">{t.n}</span>
+                  <span className="ml-1.5 text-xs text-slate-500">{t.n}</span>
                 </button>
               ))}
             </div>

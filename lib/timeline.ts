@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Transaction timeline
+ * CapNet — Transaction timeline
  *
  * The merchant-facing rendering of the audit log, and the platform's closing
  * promise: what happened, in order, in plain language.

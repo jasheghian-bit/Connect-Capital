@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 
 /*
-  Connect Capital — merchant financial profile.
+  CapNet — merchant financial profile.
 
   ALL DATA IS MOCK. The metrics, positions, and signals below are shaped exactly
   like what lib/bank-analysis.ts produces from a real transaction stream.
@@ -86,7 +86,7 @@ function Mono({ children, className = "" }) {
 function Metric({ label, value, warn = false, hidden = false }) {
   return (
     <div>
-      <div className="text-[11px] uppercase tracking-widest text-slate-400">
+      <div className="text-[11px] uppercase tracking-widest text-slate-500">
         {label}
       </div>
       {hidden ? (
@@ -125,7 +125,7 @@ export default function MerchantFinancialProfile() {
 
   return (
     <div className="min-h-screen bg-slate-100 p-6">
-      <p className="mx-auto mb-4 max-w-sm text-center text-xs text-slate-400">
+      <p className="mx-auto mb-4 max-w-sm text-center text-xs text-slate-500">
         Prototype · mock data · confirm a position, then flip the funder view
       </p>
 
@@ -166,7 +166,7 @@ export default function MerchantFinancialProfile() {
         </button>
 
         <div className="flex items-center gap-3 border-b border-slate-100 px-5 py-3">
-          <Landmark size={18} className="shrink-0 text-slate-400" />
+          <Landmark size={18} className="shrink-0 text-slate-500" />
           <span className="min-w-0 flex-1">
             <span className="block truncate text-sm text-slate-900">
               {METRICS.institution}
@@ -176,7 +176,7 @@ export default function MerchantFinancialProfile() {
             </span>
           </span>
           {!funderView && (
-            <span className="flex shrink-0 items-center gap-1 text-xs text-slate-400">
+            <span className="flex shrink-0 items-center gap-1 text-xs text-slate-500">
               <RefreshCw size={12} /> <Mono>{METRICS.lastSynced}</Mono>
             </span>
           )}
@@ -185,7 +185,7 @@ export default function MerchantFinancialProfile() {
         <div className="px-5 py-4">
           <div className="mb-3 flex items-center gap-1.5">
             <ShieldCheck size={14} className="text-emerald-600" />
-            <span className="text-xs uppercase tracking-widest text-slate-400">
+            <span className="text-xs uppercase tracking-widest text-slate-500">
               Underwriting snapshot
             </span>
           </div>
@@ -260,7 +260,7 @@ export default function MerchantFinancialProfile() {
                         <Mono className="text-[11px] text-slate-500">
                           {pct(p.paydownProgress)} paid down
                         </Mono>
-                        <Mono className="text-[11px] text-slate-400">
+                        <Mono className="text-[11px] text-slate-500">
                           {money(p.advanceAmount)} @ {p.impliedFactor}
                         </Mono>
                       </div>
@@ -296,8 +296,8 @@ export default function MerchantFinancialProfile() {
         {active.length > 0 && (
           <div className="border-t border-slate-100 px-5 py-4">
             <div className="mb-3 flex items-center gap-1.5">
-              <TrendingUp size={14} className="text-slate-400" />
-              <span className="text-xs uppercase tracking-widest text-slate-400">
+              <TrendingUp size={14} className="text-slate-500" />
+              <span className="text-xs uppercase tracking-widest text-slate-500">
                 Existing financing
               </span>
             </div>
@@ -316,7 +316,7 @@ export default function MerchantFinancialProfile() {
         )}
 
         <div className="border-t border-slate-100 px-5 py-4">
-          <div className="mb-1 text-xs uppercase tracking-widest text-slate-400">
+          <div className="mb-1 text-xs uppercase tracking-widest text-slate-500">
             If you take {money(120000)}
           </div>
           <div className="flex items-baseline gap-2">
@@ -344,7 +344,7 @@ export default function MerchantFinancialProfile() {
         {active.some((p) => p.paydownProgress !== null && p.paydownProgress >= 0.5) && (
           <div className="border-t border-slate-100 bg-slate-50 px-5 py-4">
             <div className="flex items-start gap-2.5">
-              <Building2 size={15} className="mt-0.5 shrink-0 text-slate-400" />
+              <Building2 size={15} className="mt-0.5 shrink-0 text-slate-500" />
               <div>
                 <p className="text-sm text-slate-900">
                   You're over halfway through Ridgeline

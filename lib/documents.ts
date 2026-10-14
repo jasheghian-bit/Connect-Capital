@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Document delivery
+ * CapNet — Document delivery
  *
  * The rejected alternative was a pre-signed S3 URL. It is faster and it is
  * wrong here: a signed URL is a bearer token that cannot be revoked before it

@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Funding and fee accrual
+ * CapNet — Funding and fee accrual
  *
  * The end of the transaction and the start of the platform's revenue.
  *

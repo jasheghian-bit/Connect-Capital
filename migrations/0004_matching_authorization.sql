@@ -1,4 +1,4 @@
--- Connect Capital — M3 Matching and authorization guards
+-- CapNet — M3 Matching and authorization guards
 
 BEGIN;
 

@@ -1,11 +1,11 @@
 /**
- * Connect Capital — File grading
+ * CapNet — File grading
  *
  * A–F on the industry's own vocabulary. Grading exists for one commercial
  * reason: match precision is a funder-retention feature.
  *
  * A D-paper merchant shown twelve funders wastes eleven underwriters' time and
- * teaches every one of them that Connect Capital sends junk. The same merchant
+ * teaches every one of them that CapNet sends junk. The same merchant
  * shown three funders who actually buy D paper is a good file for all four
  * parties. Grading is what makes narrow routing possible.
  *

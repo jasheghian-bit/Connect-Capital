@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Blinded card tests
+ * CapNet — Blinded card tests
  *
  * The most important test file in the repo.
  *

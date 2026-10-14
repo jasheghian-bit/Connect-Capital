@@ -1,5 +1,5 @@
 /**
- * Connect Capital — M1 Merchant schema
+ * CapNet — M1 Merchant schema
  *
  * Two structural commitments live in this file.
  *
@@ -134,7 +134,7 @@ export const merchantOwners = pgTable(
     dobToken: text('dob_token'),
     addressJson: jsonb('address_json').$type<Record<string, string>>(),
     /**
-     * Self-reported band, used for matching only. Connect Capital does not
+     * Self-reported band, used for matching only. CapNet does not
      * pull credit and redistribute it — each authorized funder pulls its own
      * under its own permissible purpose. See B.3.3 (FCRA).
      */

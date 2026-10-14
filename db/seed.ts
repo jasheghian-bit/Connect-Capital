@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Development seed
+ * CapNet — Development seed
  *
  * R9 / Part LXV: nothing is faked. These are TEST organizations and they say
  * so in their legal name, so a labelled fixture can never be mistaken for a
@@ -27,7 +27,7 @@ async function seed() {
       .insert(organizations)
       .values({
         type: 'platform',
-        legalName: 'Connect Capital (Platform)',
+        legalName: 'CapNet (Platform)',
         status: 'active',
       })
       .returning();
@@ -36,7 +36,7 @@ async function seed() {
       .insert(users)
       .values({
         authProviderId: 'seed_admin',
-        email: 'admin@test.connectcapital.local',
+        email: 'admin@test.capnet.local',
         fullName: 'Test Admin',
         status: 'active',
         mfaEnabled: true,
@@ -64,7 +64,7 @@ async function seed() {
       .insert(users)
       .values({
         authProviderId: 'seed_merchant',
-        email: 'merchant@test.connectcapital.local',
+        email: 'merchant@test.capnet.local',
         phone: '+15555550100',
         fullName: 'Test Merchant Owner',
         status: 'active',
@@ -98,7 +98,7 @@ async function seed() {
         .insert(users)
         .values({
           authProviderId: `seed_provider_rep_${i + 1}`,
-          email: `rep${i + 1}@test.connectcapital.local`,
+          email: `rep${i + 1}@test.capnet.local`,
           fullName: `Test Rep ${i + 1}`,
           status: 'active',
         })
@@ -116,7 +116,7 @@ async function seed() {
       .insert(organizations)
       .values({
         type: 'specialist',
-        legalName: 'TEST SPECIALIST — Connect Capital Advisory',
+        legalName: 'TEST SPECIALIST — CapNet Advisory',
         status: 'pending',
       })
       .returning();
@@ -125,7 +125,7 @@ async function seed() {
       .insert(users)
       .values({
         authProviderId: 'seed_specialist',
-        email: 'specialist@test.connectcapital.local',
+        email: 'specialist@test.capnet.local',
         fullName: 'Test Funding Specialist',
         status: 'active',
       })

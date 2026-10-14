@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Analytics tests
+ * CapNet — Analytics tests
  *
  * The humility gate is the feature under test. Twenty pilot deals producing a
  * 65% funding rate is noise, and the temptation to put it in a deck is the

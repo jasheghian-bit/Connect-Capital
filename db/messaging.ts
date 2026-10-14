@@ -1,5 +1,5 @@
 /**
- * Connect Capital — M6/M7 Messaging and underwriting schema
+ * CapNet — M6/M7 Messaging and underwriting schema
  *
  * ── NOTIFICATIONS ARE SAFETY-CRITICAL HERE ─────────────────────────────────
  *

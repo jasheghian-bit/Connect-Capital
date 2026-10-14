@@ -1,4 +1,4 @@
-# Connect Capital — Counsel Brief
+# CapNet — Counsel Brief
 
 **Purpose:** to let counsel begin substantive work without first reconstructing
 what the business is. Every question below is one the software is already built
@@ -46,7 +46,7 @@ and whether it affects the classification question below.
 
 ## 2. The threshold question
 
-**Is Connect Capital a broker, a provider, or a technology provider — and in
+**Is CapNet a broker, a provider, or a technology provider — and in
 which states?**
 
 Everything else follows from this. Our own reading, which we want tested:
@@ -207,7 +207,7 @@ drafts drop in as versioned content.
 ## 8. Deferred but coming
 
 We have designed an optional **Funding Specialist**: a human who assists a
-merchant inside the platform, paid by Connect Capital, which is paid by the
+merchant inside the platform, paid by CapNet, which is paid by the
 funder. This is not in the initial launch, and we recognize it raises conflict
 of interest and compensation disclosure questions — and likely settles the
 broker classification question on its own.

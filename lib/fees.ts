@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Fee engine
+ * CapNet — Fee engine
  *
  * R6: the fee rate is configurable data, never a constant in code. "3%" is a
  * row in a table with an effective date and an agreement behind it, because

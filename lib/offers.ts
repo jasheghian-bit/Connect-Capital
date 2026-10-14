@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Offers and negotiation
+ * CapNet — Offers and negotiation
  *
  * Every revision is computed, disclosed, validated against the merchant's
  * jurisdiction, and frozen. An offer that would be non-compliant in the
@@ -27,6 +27,7 @@ import {
   type OfferTerms,
   type Disclosure,
 } from './disclosure';
+import { assertNoUndisclosedFees } from './fee-transparency';
 import { mutate } from './audit';
 import { withActor, type Tx } from './db';
 import { authorize, type Actor } from './policy';
@@ -61,6 +62,10 @@ export async function submitOffer(
   const jurisdiction = await merchantJurisdiction(actor, input.applicationId);
 
   const disclosure = computeDisclosure(input.terms);
+  // Every merchant cost must appear in the itemization; funder-internal
+  // pricing (buy rate, loading) must not. Refused, like an incomplete
+  // disclosure — see lib/fee-transparency.ts.
+  assertNoUndisclosedFees(input.terms, disclosure);
   const validation = validateDisclosure(disclosure, jurisdiction);
 
   if (!validation.valid) {

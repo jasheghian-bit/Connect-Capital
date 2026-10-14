@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Preflight
+ * CapNet — Preflight
  *
  * Verifies the database actually enforces what the code assumes.
  *
@@ -23,6 +23,7 @@
 
 import { sql } from 'drizzle-orm';
 import { withSystem } from '../lib/db';
+import { placeholdersRemaining } from '../lib/business-details';
 
 interface Check {
   name: string;
@@ -45,6 +46,8 @@ const APPEND_ONLY = [
   'counteroffers',
   'offer_events',
   'disclosure_views',
+  'email_suppression_events',
+  'data_deletion_events',
 ];
 
 const RLS_REQUIRED = [
@@ -56,9 +59,25 @@ const RLS_REQUIRED = [
   'conversations', 'messages', 'underwriting_states', 'notifications',
   'offers', 'offer_revisions', 'counteroffers',
   'fundings', 'platform_fees', 'fee_schedules',
+  'email_preferences', 'email_suppression_events',
+  'data_deletion_requests', 'data_deletion_events',
 ];
 
 const checks: Check[] = [
+  {
+    // First, and touches no database: Pool connects lazily, so this reports
+    // even when DATABASE_URL is unset and every check after it errors.
+    name: 'business details filled in',
+    detail: 'lib/business-details.ts still has [FOUNDER: ...] placeholders (CAN-SPAM address, legal name)',
+    run: async () => {
+      const left = placeholdersRemaining();
+      if (left.length > 0) {
+        console.error('  placeholders remaining:', left.join(', '));
+        return false;
+      }
+      return true;
+    },
+  },
   {
     name: 'append-only grants',
     detail: 'UPDATE and DELETE revoked from app_user on every evidence table',
@@ -242,7 +261,7 @@ const checks: Check[] = [
 ];
 
 async function main() {
-  console.log('Connect Capital preflight\n');
+  console.log('CapNet preflight\n');
   let failed = 0;
 
   for (const check of checks) {

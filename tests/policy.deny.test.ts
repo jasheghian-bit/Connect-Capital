@@ -1,5 +1,5 @@
 /**
- * Connect Capital — The Deny Suite
+ * CapNet — The Deny Suite
  *
  * This file is the specification. policy.ts is the implementation.
  *

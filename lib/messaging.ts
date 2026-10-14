@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Messaging
+ * CapNet — Messaging
  *
  * Conversations are scoped to an application and a counterparty. There is no
  * general inbox and no way to start a thread with someone you have no live

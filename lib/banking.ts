@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Banking service
+ * CapNet — Banking service
  *
  * Connection lifecycle and the sync job that turns raw transactions into
  * everything downstream: underwriting metrics, position detection, stacking
@@ -7,7 +7,7 @@
  *
  * ── CONSENT IS LAYERED ─────────────────────────────────────────────────────
  *
- * The merchant consents to Connect Capital reading the account. That is a
+ * The merchant consents to CapNet reading the account. That is a
  * different grant from any funder seeing what it produced, which is a
  * different grant again from raw transaction detail — which no funder ever
  * receives. A funder sees `financial_profiles`: normalized metrics, no

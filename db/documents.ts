@@ -1,5 +1,5 @@
 /**
- * Connect Capital — M1 Document vault
+ * CapNet — M1 Document vault
  *
  * "Upload once" is a merchant promise. `document_access_events` is what turns
  * it into an auditable one: the merchant can see not just who has access, but

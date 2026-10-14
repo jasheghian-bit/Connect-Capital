@@ -1,5 +1,5 @@
 /**
- * Connect Capital — M3 Matching and authorization schema
+ * CapNet — M3 Matching and authorization schema
  *
  * `authorizations` is the most important table in the database. Everything the
  * platform claims to a merchant reduces to a row here: who may see the file,
@@ -150,7 +150,7 @@ export const authorizationEvents = pgTable(
  * A merchant's report that an authorized funder contacted them outside the
  * platform. Turns every merchant into a sensor — far more effective than
  * inferring leakage from access logs, because a phone call leaves no trace
- * in any system Connect Capital controls.
+ * in any system CapNet controls.
  */
 export const offPlatformContactReports = pgTable(
   'off_platform_contact_reports',

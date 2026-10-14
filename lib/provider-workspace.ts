@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Provider workspace
+ * CapNet — Provider workspace
  *
  * The funder's side of the transaction. Every read here goes through
  * `resolveProviderView`, which returns identity only against a live grant.

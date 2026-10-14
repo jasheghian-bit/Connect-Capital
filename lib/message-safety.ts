@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Message safety
+ * CapNet — Message safety
  *
  * The platform's central promise to a merchant is that their authorized
  * funders reach them here, so any other call can be ignored. That promise
@@ -81,7 +81,7 @@ const OBFUSCATION = [
 ];
 
 /** Platform-owned hosts. A link to our own docs is not an exfiltration route. */
-const ALLOWED_HOSTS = ['connectcapital.com', 'app.connectcapital.com'];
+const ALLOWED_HOSTS = ['capnet.io', 'app.capnet.io'];
 
 function isAllowedHost(match: string): boolean {
   return ALLOWED_HOSTS.some((h) => match.toLowerCase().includes(h));

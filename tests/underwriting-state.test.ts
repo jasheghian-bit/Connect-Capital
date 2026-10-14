@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Underwriting state and decline aggregation tests
+ * CapNet — Underwriting state and decline aggregation tests
  *
  *   npx tsx tests/underwriting-state.test.ts
  */

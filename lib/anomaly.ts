@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Trust and safety detection
+ * CapNet — Trust and safety detection
  *
  * Pure rules over activity the platform already records. Nothing here is proof
  * of anything; each rule produces a finding for a human to look at, with the

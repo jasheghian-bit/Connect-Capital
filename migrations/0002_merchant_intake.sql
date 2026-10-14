@@ -1,4 +1,4 @@
--- Connect Capital — M1 Merchant intake guards
+-- CapNet — M1 Merchant intake guards
 --
 -- Every table added above the kernel gets classified on arrival: is it state,
 -- or is it evidence? Evidence gets locked here, in the same migration that

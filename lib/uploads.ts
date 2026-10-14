@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Upload lifecycle
+ * CapNet — Upload lifecycle
  *
  * ASYMMETRY, ON PURPOSE: uploads go direct to storage, downloads are proxied.
  *

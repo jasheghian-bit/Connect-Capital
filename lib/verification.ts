@@ -1,8 +1,8 @@
 /**
- * Connect Capital — Provider verification
+ * CapNet — Provider verification
  *
  * The verified badge is the product. A merchant authorizes a funder partly
- * because Connect Capital vouched for them, which means the badge carries the
+ * because CapNet vouched for them, which means the badge carries the
  * platform's liability and its brand.
  *
  * Two rules make it real rather than decorative:
@@ -48,7 +48,7 @@ export interface KybProvider {
  * An automatic approve-on-clean would be faster and wrong: a clean KYB means
  * the entity exists and is in good standing, which is the floor, not the bar.
  * The bar includes a signed participation agreement, a look at how they treat
- * merchants, and a judgment about whether Connect Capital wants its name next
+ * merchants, and a judgment about whether CapNet wants its name next
  * to theirs. None of that is in a vendor response.
  */
 export async function runKybCheck(

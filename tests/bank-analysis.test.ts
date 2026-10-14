@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Bank analysis tests
+ * CapNet — Bank analysis tests
  *
  * The advance-as-revenue case is the one that matters most. A $120k MCA
  * disbursement counted as a sale inflates a merchant's numbers precisely when

@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Session and actor resolution
+ * CapNet — Session and actor resolution
  *
  * THE RULE THIS FILE EXISTS TO ENFORCE: the Actor is derived from the
  * authenticated session. It is never read from a request body, query string,

@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Disclosure engine
+ * CapNet — Disclosure engine
  *
  * Computes what a merchant must be shown alongside any offer, and refuses to
  * let an offer through that is missing a field its jurisdiction requires.

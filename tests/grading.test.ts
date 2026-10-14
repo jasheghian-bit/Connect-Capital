@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Grading tests
+ * CapNet — Grading tests
  *
  *   npx tsx tests/grading.test.ts
  */

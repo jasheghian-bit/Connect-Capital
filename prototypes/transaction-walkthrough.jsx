@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 
 /*
-  Connect Capital — the whole transaction, one screen.
+  CapNet — the whole transaction, one screen.
 
   ALL DATA IS MOCK. Every state below mirrors what the built system produces.
 
@@ -140,7 +140,7 @@ function MerchantView({ step }) {
   return (
     <Phone>
       <div className="border-b border-slate-200 px-5 pb-4 pt-5">
-        <div className="text-[11px] uppercase tracking-widest text-slate-400">
+        <div className="text-[11px] uppercase tracking-widest text-slate-500">
           Your request
         </div>
         <Mono className="text-2xl text-slate-900">{money(120000)}</Mono>
@@ -203,7 +203,7 @@ function MerchantView({ step }) {
               ))}
             </div>
           ))}
-          <div className="text-center text-xs text-slate-400">+ 4 more</div>
+          <div className="text-center text-xs text-slate-500">+ 4 more</div>
         </div>
       )}
 
@@ -230,7 +230,7 @@ function MerchantView({ step }) {
 
       {step >= 3 && step < 5 && (
         <div className="px-5 py-4">
-          <div className="mb-2 text-[11px] uppercase tracking-widest text-slate-400">
+          <div className="mb-2 text-[11px] uppercase tracking-widest text-slate-500">
             Who has your file
           </div>
           <div className="rounded-xl border border-slate-200 p-3">
@@ -354,20 +354,20 @@ function HarborView({ step }) {
 
           <div className="mt-4 rounded-xl border border-slate-200">
             <div className="flex items-center gap-2 border-b border-slate-100 px-3 py-2 text-xs text-slate-700">
-              <FileText size={13} className="text-slate-400" /> Documents
+              <FileText size={13} className="text-slate-500" /> Documents
             </div>
             <div className="divide-y divide-slate-100 text-xs">
               <div className="flex justify-between px-3 py-2">
                 <span className="text-slate-700">Government ID</span>
-                <span className="text-slate-400">v1</span>
+                <span className="text-slate-500">v1</span>
               </div>
               {step >= 5 && (
                 <div className="flex justify-between px-3 py-2">
                   <span className="text-slate-700">August statement</span>
-                  <span className="text-slate-400">v1</span>
+                  <span className="text-slate-500">v1</span>
                 </div>
               )}
-              <div className="flex items-center gap-1.5 px-3 py-2 text-slate-400">
+              <div className="flex items-center gap-1.5 px-3 py-2 text-slate-500">
                 <Lock size={11} /> 2 outside your scope
               </div>
             </div>
@@ -422,7 +422,7 @@ function BlindedBody({ step }) {
   return (
     <div className="p-4">
       <div className="mb-4 flex items-start gap-2.5 rounded-xl border border-slate-200 bg-slate-50 p-3">
-        <EyeOff size={16} className="mt-0.5 shrink-0 text-slate-400" />
+        <EyeOff size={16} className="mt-0.5 shrink-0 text-slate-500" />
         <div>
           <div className="text-sm text-slate-900">
             {step < 2
@@ -455,7 +455,7 @@ function BlindedBody({ step }) {
         {["Business name", "Owner", "Phone", "Documents"].map((f) => (
           <div
             key={f}
-            className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-2.5 py-1.5 text-xs text-slate-400"
+            className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-2.5 py-1.5 text-xs text-slate-500"
           >
             <Lock size={11} /> {f}
           </div>
@@ -471,14 +471,14 @@ function SystemView({ step }) {
     <div className="overflow-hidden rounded-2xl border border-slate-300 bg-white">
       <div className="border-b border-slate-200 px-4 py-3">
         <span className="text-sm text-slate-900">Transaction record</span>
-        <span className="ml-2 text-xs text-slate-400">
+        <span className="ml-2 text-xs text-slate-500">
           <Mono>{shown.length}</Mono> events · hash-chained · append-only
         </span>
       </div>
       <div className="divide-y divide-slate-100">
         {shown.map((e, i) => (
           <div key={i} className="flex items-baseline gap-3 px-4 py-2">
-            <Mono className="w-8 shrink-0 text-[11px] text-slate-400">
+            <Mono className="w-8 shrink-0 text-[11px] text-slate-500">
               {String(i + 1).padStart(2, "0")}
             </Mono>
             <span
@@ -487,7 +487,7 @@ function SystemView({ step }) {
                   ? "text-slate-900"
                   : e.a === "provider"
                   ? "text-slate-500"
-                  : "text-slate-400"
+                  : "text-slate-500"
               }`}
             >
               {e.a === "you" ? "merchant" : e.a}
@@ -496,7 +496,7 @@ function SystemView({ step }) {
           </div>
         ))}
       </div>
-      <div className="border-t border-slate-100 px-4 py-2.5 text-[11px] leading-relaxed text-slate-400">
+      <div className="border-t border-slate-100 px-4 py-2.5 text-[11px] leading-relaxed text-slate-500">
         Refused access attempts, admin actions, and internal underwriting notes
         exist in the audit log and never render here. The timeline is an
         allowlist.
@@ -512,7 +512,7 @@ export default function TransactionWalkthrough() {
   return (
     <div className="min-h-screen bg-slate-100 p-6">
       <div className="mx-auto max-w-3xl">
-        <p className="mb-4 text-xs text-slate-400">
+        <p className="mb-4 text-xs text-slate-500">
           Prototype · mock data · step through the transaction, switch
           perspective at any point
         </p>
@@ -528,8 +528,8 @@ export default function TransactionWalkthrough() {
             >
               <span className="block text-xs">{v.label}</span>
               <span
-                className={`block text-[10px] ${
-                  view === v.id ? "text-slate-400" : "text-slate-400"
+                className={`block text-xs ${
+                  view === v.id ? "text-slate-500" : "text-slate-500"
                 }`}
               >
                 {v.sub}
@@ -548,7 +548,7 @@ export default function TransactionWalkthrough() {
               <ChevronLeft size={16} /> Back
             </button>
             <div className="text-center">
-              <Mono className="text-[11px] text-slate-400">
+              <Mono className="text-[11px] text-slate-500">
                 {step + 1} / {STEPS.length}
               </Mono>
               <div className="text-sm text-slate-900">{STEPS[step].t}</div>

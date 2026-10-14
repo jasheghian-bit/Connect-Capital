@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Authorization Policy
+ * CapNet — Authorization Policy
  *
  * THE RULE: every route handler calls can() as its first statement, before
  * any read or write. There is no other place authorization decisions are made.

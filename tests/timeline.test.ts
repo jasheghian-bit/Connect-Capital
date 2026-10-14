@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Timeline tests
+ * CapNet — Timeline tests
  *
  * The timeline is the platform's closing promise: what happened, in order, in
  * plain language. It reads from the audit log, which carries things a merchant

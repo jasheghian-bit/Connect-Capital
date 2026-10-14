@@ -1,4 +1,4 @@
--- Connect Capital — M9 Funding and fee guards
+-- CapNet — M9 Funding and fee guards
 
 BEGIN;
 

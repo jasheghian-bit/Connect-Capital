@@ -1,4 +1,4 @@
--- Connect Capital — M2 Provider verification guards
+-- CapNet — M2 Provider verification guards
 --
 -- The verified badge carries the platform's liability. This migration makes it
 -- structurally impossible to set by hand.

@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Provider view resolution tests
+ * CapNet — Provider view resolution tests
  *
  * Companion to blinded.test.ts. That file proves the card contains nothing it
  * shouldn't. This one proves you only get past the card by holding a live

@@ -1,4 +1,4 @@
--- Connect Capital — M10/M11 Admin and hardening
+-- CapNet — M10/M11 Admin and hardening
 
 BEGIN;
 

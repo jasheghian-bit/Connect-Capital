@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Disclosure tests
+ * CapNet — Disclosure tests
  *
  * The APR here goes in front of merchants and, eventually, regulators. The
  * known-answer test below is the anchor: a plain 12-month amortizing loan has

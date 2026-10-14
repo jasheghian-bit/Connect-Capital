@@ -1,4 +1,4 @@
--- Connect Capital — M0 Kernel Guards
+-- CapNet — M0 Kernel Guards
 --
 -- These are the guarantees that cannot be left to application discipline.
 -- Twenty minutes of work here is worth more than any amount of code review,

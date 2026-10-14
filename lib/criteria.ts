@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Criteria evaluation
+ * CapNet — Criteria evaluation
  *
  * Dependency-free by design. This decides which funders a merchant sees and
  * why, which makes it the highest-consequence logic in the product and the

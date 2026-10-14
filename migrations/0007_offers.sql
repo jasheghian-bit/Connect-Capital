@@ -1,4 +1,4 @@
--- Connect Capital — M8 Offer and disclosure guards
+-- CapNet — M8 Offer and disclosure guards
 
 BEGIN;
 

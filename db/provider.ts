@@ -1,5 +1,5 @@
 /**
- * Connect Capital — M2 Provider schema
+ * CapNet — M2 Provider schema
  *
  * Three things in this file are load-bearing beyond the obvious.
  *

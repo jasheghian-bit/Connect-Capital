@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Trust and safety tests
+ * CapNet — Trust and safety tests
  *
  *   npx tsx tests/anomaly.test.ts
  */

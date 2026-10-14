@@ -1,4 +1,4 @@
-# Connect Capital — Founding Architecture & Strategy Response
+# CapNet — Founding Architecture & Strategy Response
 
 **Prepared as: CTO / product architect response to the master founder brief**
 **Date: August 18, 2026**
@@ -6,7 +6,7 @@
 
 ---
 
-## A. What I understand Connect Capital to be
+## A. What I understand CapNet to be
 
 ### A.1 The ecosystem, stated economically
 
@@ -19,7 +19,7 @@ The distribution layer is where your thesis lives. In a typical MCA, the ISO/bro
 
 So the merchant's cost of capital contains a variable, invisible, negotiable component whose size is set by the party the merchant believes is representing them. That is not a transparency problem with a side of economics. It is an economics problem wearing a transparency costume.
 
-**This gives your 3% its real meaning, and I don't think the brief states it forcefully enough.** Connect Capital's pitch to a funder is not "cleaner files." It is: *you are currently paying 8–15 points of the funded amount to acquire this deal; pay us 3.* On a $100K advance that is a $5,000–$12,000 swing in the funder's favor, per deal, before any argument about file quality. That number is the entire supply-side wedge. Everything else — verification, permissioning, audit — is what makes the number *safe* to accept. Lead with the arbitrage; sell the trust layer as the reason it isn't a race to the bottom.
+**This gives your 3% its real meaning, and I don't think the brief states it forcefully enough.** CapNet's pitch to a funder is not "cleaner files." It is: *you are currently paying 8–15 points of the funded amount to acquire this deal; pay us 3.* On a $100K advance that is a $5,000–$12,000 swing in the funder's favor, per deal, before any argument about file quality. That number is the entire supply-side wedge. Everything else — verification, permissioning, audit — is what makes the number *safe* to accept. Lead with the arbitrage; sell the trust layer as the reason it isn't a race to the bottom.
 
 ### A.2 Why the broker exists — including the parts your brief underweights
 
@@ -34,7 +34,7 @@ A small business owner does not wake up wanting a 1.38 factor. Brokers manufactu
 Two more functions the brief doesn't capture:
 
 - **Live appetite routing.** Good brokers know which funder is buying *this week* — who just raised syndication capital, who is off restaurants until Q4, whose underwriter is lenient on two negative days. That is dynamic, unpublished, relationship-carried knowledge. A static `provider_criteria` table will be stale within a month and will silently degrade match quality in a way that looks like a product failure.
-- **Adverse-selection filtering.** Funders sometimes *prefer* a broker because the broker eats the junk. If Connect Capital passes everything through with perfect transparency, funders absorb screening cost they previously externalized.
+- **Adverse-selection filtering.** Funders sometimes *prefer* a broker because the broker eats the junk. If CapNet passes everything through with perfect transparency, funders absorb screening cost they previously externalized.
 
 I flag all three because your MVP plan (Part L: "do not overbuild merchant acquisition") treats the hardest problem as a later phase.
 
@@ -78,9 +78,9 @@ Not "more users." The compounding asset is **outcome data**: for a given merchan
 | R7 | Domain model is financing-product agnostic |
 | R8 | Merchant experience is mobile-first |
 | R9 | Nothing is faked. Mock/prototype/placeholder is labeled as such in the UI, not just in comments |
-| R10 | Connect Capital does not touch merchant funds in the MVP |
+| R10 | CapNet does not touch merchant funds in the MVP |
 
-R10 is my addition and I want to be explicit: **do not build money movement into the MVP.** The moment you disburse funds or collect repayment you are into money transmitter licensing in ~50 jurisdictions. The funder wires the merchant directly. Connect Capital records the funding event and invoices its fee. This is a one-line decision that removes an entire regulatory workstream.
+R10 is my addition and I want to be explicit: **do not build money movement into the MVP.** The moment you disburse funds or collect repayment you are into money transmitter licensing in ~50 jurisdictions. The funder wires the merchant directly. CapNet records the funding event and invoices its fee. This is a one-line decision that removes an entire regulatory workstream.
 
 ### B.2 Founder hypotheses (build the instrumentation, hold the belief loosely)
 
@@ -101,17 +101,17 @@ H6 is the one I would build the most careful measurement around, because it is t
 
 ### B.3 Requires counsel — and this is more urgent than the brief implies
 
-I ran current research on this. The regulatory ground moved significantly in 2025–2026 and it lands directly on Connect Capital's design, not just its paperwork.
+I ran current research on this. The regulatory ground moved significantly in 2025–2026 and it lands directly on CapNet's design, not just its paperwork.
 
 **B.3.1 — You should plan on being classified as a broker.**
 
-Several states now define the regulated party in language that plausibly captures Connect Capital's core product. <cite index="12-1">Connecticut defines "provider" as a person who extends a specific offer of commercial financing to a recipient, and expressly includes a commercial financing broker</cite>. Your platform's central screen presents specific offers to a merchant. <cite index="13-1">Virginia, Connecticut, Missouri, and Texas have commercial-financing-specific registration requirements that expressly reach certain brokers; North Dakota uses a broader money-broker license; Vermont is expanding its framework to sales-based financing and factoring in 2027; and older loan-broker statutes in states including North Carolina, Nebraska, and Illinois can also apply</cite>. <cite index="14-1">New York requires brokers to be registered with NYDFS</cite>. <cite index="10-1">Texas HB 700 requires providers *and brokers* of sales-based financing to register with the OCCC by December 31, 2026, with annual renewal, and includes no de minimis exemption for low volume</cite>.
+Several states now define the regulated party in language that plausibly captures CapNet's core product. <cite index="12-1">Connecticut defines "provider" as a person who extends a specific offer of commercial financing to a recipient, and expressly includes a commercial financing broker</cite>. Your platform's central screen presents specific offers to a merchant. <cite index="13-1">Virginia, Connecticut, Missouri, and Texas have commercial-financing-specific registration requirements that expressly reach certain brokers; North Dakota uses a broader money-broker license; Vermont is expanding its framework to sales-based financing and factoring in 2027; and older loan-broker statutes in states including North Carolina, Nebraska, and Illinois can also apply</cite>. <cite index="14-1">New York requires brokers to be registered with NYDFS</cite>. <cite index="10-1">Texas HB 700 requires providers *and brokers* of sales-based financing to register with the OCCC by December 31, 2026, with annual renewal, and includes no de minimis exemption for low volume</cite>.
 
 Compensation is the classic trigger. A transaction-contingent fee paid by the funder on a deal you sourced and presented is, in substance, brokerage compensation. Calling it a "platform success fee" is a label, not a structure.
 
 **My recommendation: architect and operate as if you are a regulated broker, and treat any technology-provider exemption as upside.** Getting this backwards is a company-ending error, and the cost of being right early is a registration matrix and some disclosure plumbing.
 
-*Product consequence:* the schema needs `provider_registrations` and `platform_registrations` keyed by state with effective dates, and the matching engine needs a jurisdictional gate that can suppress a provider — or suppress Connect Capital itself — in a state where the required registration is not live.
+*Product consequence:* the schema needs `provider_registrations` and `platform_registrations` keyed by state with effective dates, and the matching engine needs a jurisdictional gate that can suppress a provider — or suppress CapNet itself — in a state where the required registration is not live.
 
 **B.3.2 — Your offer comparison screen is a regulated disclosure surface.**
 
@@ -126,8 +126,8 @@ Design consequences, which I have built into the schema in section F:
 
 **B.3.3 — Other counsel items**
 
-- **Funding Specialist structure.** A human who advises the merchant, is paid by Connect Capital, which is paid by the funder. That is a conflict of interest requiring disclosure at minimum, and in registration states it is squarely broker activity. Comp model, disclosure text, and any merchant-paid alternative need counsel *before* the first specialist touches a file.
-- **FCRA.** Personal credit on a guarantor requires permissible purpose and consent. If Connect Capital pulls once and distributes to twelve funders, you are potentially a consumer reporting agency or a reseller. Safest MVP posture: Connect Capital collects a self-reported credit band for matching only, and each authorized funder pulls its own report under its own permissible purpose with merchant consent captured in the platform.
+- **Funding Specialist structure.** A human who advises the merchant, is paid by CapNet, which is paid by the funder. That is a conflict of interest requiring disclosure at minimum, and in registration states it is squarely broker activity. Comp model, disclosure text, and any merchant-paid alternative need counsel *before* the first specialist touches a file.
+- **FCRA.** Personal credit on a guarantor requires permissible purpose and consent. If CapNet pulls once and distributes to twelve funders, you are potentially a consumer reporting agency or a reseller. Safest MVP posture: CapNet collects a self-reported credit band for matching only, and each authorized funder pulls its own report under its own permissible purpose with merchant consent captured in the platform.
 - **Bank credentials / data aggregation.** Use a licensed aggregator; never handle credentials directly; get an explicit merchant consent artifact for each connection and each downstream sharing scope.
 - **Anti-circumvention and tail terms.** Enforceable only if drafted by counsel; the platform's job is evidence.
 - **CFPB small-business data collection (1071).** Status has been in flux; verify current applicability to sales-based financing and whether any obligation attaches to an intermediary.
@@ -185,7 +185,7 @@ The brief frames funder resistance as inertia. It isn't. Most MCA funders' entir
 
 Mitigations to design for now:
 - Let funders participate under a distinct entity/brand so the ISO channel doesn't immediately see it.
-- Position Connect Capital volume as *incremental* — merchants their ISOs weren't reaching — and give them data that proves it (dedupe against their existing pipeline via a submitted-file hash check).
+- Position CapNet volume as *incremental* — merchants their ISOs weren't reaching — and give them data that proves it (dedupe against their existing pipeline via a submitted-file hash check).
 - Expect the first cohort to be funders who are *under*-served by ISOs: newer entrants, funders in a growth push, funders burned by broker fraud.
 
 ### C.5 Adverse selection
@@ -860,7 +860,7 @@ Mostly no → we don't build it.
 
 ## The captive-origination structure changes the model
 
-Connect Capital and the broker shop share ownership. That resolves the cold-start problem completely and creates three new ones.
+CapNet and the broker shop share ownership. That resolves the cold-start problem completely and creates three new ones.
 
 ### 1. Phase 1 cannot test the economic thesis
 
@@ -916,7 +916,7 @@ Off-platform figures can be reconciled manually each month. This is an unusually
 
 - **Link rates will disappoint.** MCA merchants are frequently reluctant to link accounts, particularly those carrying existing positions — which are exactly the merchants whose data you most want. Plan for a meaningful share never linking. Statement upload stays a first-class path, not a vestigial fallback.
 - **Coverage is patchier for small business accounts** at regional banks and credit unions than for consumer accounts. Test coverage against a real sample of the broker shop's recent merchants before committing to it as the primary path.
-- **Consent is layered.** Merchant consents to Connect Capital reading the account. Each provider's access to *derived metrics* is a separate scope from access to *raw transaction detail*. Default the raw scope off.
+- **Consent is layered.** Merchant consents to CapNet reading the account. Each provider's access to *derived metrics* is a separate scope from access to *raw transaction detail*. Default the raw scope off.
 - **Positioning matters.** Frame linking as "increases your match quality and reduces document requests," never as verification or surveillance.
 
 ## Revised roadmap
@@ -943,7 +943,7 @@ Roughly 23–27 weeks to pilot. A thinner first release (deferring bank connecti
 
 ## Regulatory note, updated
 
-Owning the origination channel makes the technology-provider classification substantially harder to sustain. The broker shop's existing registration posture — whatever it is today — becomes the posture Connect Capital inherits in the eyes of a regulator. Texas registration for providers and brokers of sales-based financing opens toward a December 31, 2026 deadline. This should go to counsel now rather than at launch.
+Owning the origination channel makes the technology-provider classification substantially harder to sustain. The broker shop's existing registration posture — whatever it is today — becomes the posture CapNet inherits in the eyes of a regulator. Texas registration for providers and brokers of sales-based financing opens toward a December 31, 2026 deadline. This should go to counsel now rather than at launch.
 
 ## M0 scope, ready to build
 
@@ -963,7 +963,7 @@ Owning the origination channel makes the technology-provider classification subs
 
 # DECISION — Direct-only launch (supersedes the Aug 18 addendum)
 
-**The broker-sourced Phase 1 is cancelled.** Connect Capital launches direct-to-merchant. The founder's broker shop remains a separate business and does not route deals through the platform.
+**The broker-sourced Phase 1 is cancelled.** CapNet launches direct-to-merchant. The founder's broker shop remains a separate business and does not route deals through the platform.
 
 Rationale: broker-in-the-loop contaminates the proof (H5, H6, H9 stay untestable), signals arbitrage to funders, marks down in diligence, and — the founder's own reason — defeats the purpose of the platform.
 
@@ -1041,7 +1041,7 @@ That single meeting seeds supply and demand simultaneously, and it is precisely 
 
 # GTM MECHANISM — Decline routing as the participation term
 
-**Decision:** verified providers do not pay a subscription. The condition of participation is that they route declined merchants to Connect Capital.
+**Decision:** verified providers do not pay a subscription. The condition of participation is that they route declined merchants to CapNet.
 
 This converts customer acquisition cost into a supply-side contract term, paid in access rather than cash. It is only demandable by someone with the network to demand it, which makes it a real "why us." It should be the centerpiece of the funder agreement.
 
@@ -1055,10 +1055,10 @@ For an established MCA funder, direct origination is typically a minority of tot
 
 ## 2. Referral, not data transfer
 
-Connect Capital must not receive a declined merchant's file without the merchant's own action.
+CapNet must not receive a declined merchant's file without the merchant's own action.
 
 - **Preferred: tracked referral.** The funder sends the *merchant* a message on decline with a per-funder tracked link. No merchant data crosses until the merchant registers on the platform themselves.
-- **Alternative: consent-at-intake.** The funder's own application carries an authorization to refer to Connect Capital on decline. Higher conversion, requires the funder to change intake, requires counsel.
+- **Alternative: consent-at-intake.** The funder's own application carries an authorization to refer to CapNet on decline. Higher conversion, requires the funder to change intake, requires counsel.
 
 This is not only a privacy and consent question. Ingesting merchant files that the merchant never sent is precisely the unsolicited data proliferation the platform exists to eliminate. Doing it at the front door would make the core promise false on day one.
 
@@ -1135,15 +1135,15 @@ Fundbox raised roughly three quarters of a billion dollars. Lendio has been buil
 **Fundbox is not a competitor — it is a candidate provider.** It is a direct lender with embedded distribution, not a marketplace. It underwrites off bank data with near-total automation and same-day decisions. Two implications:
 
 - Its underwriting model validates the bank-connectivity decision (M5).
-- It sets the merchant expectation bar. Merchants who have used a product like this expect a decision in minutes. Connect Capital's funders underwrite manually, so the *platform* has to absorb that expectation gap — pre-qualification match preview, status visibility, and honest time-to-offer estimates. This is a UX requirement, not a nicety.
+- It sets the merchant expectation bar. Merchants who have used a product like this expect a decision in minutes. CapNet's funders underwrite manually, so the *platform* has to absorb that expectation gap — pre-qualification match preview, status visibility, and honest time-to-offer estimates. This is a UX requirement, not a nicety.
 
-**Lendio is the direct competitor and the document should have said so.** Same shape as Connect Capital: one application, many lenders, free to the merchant, lender pays a commission when a deal funds. Fourteen years of head start, 75+ lenders, established brand and SEO. It is described in the market as operating as a broker earning commission from its lending partners — which independently reinforces the recommendation in B.3.1 to plan for broker classification.
+**Lendio is the direct competitor and the document should have said so.** Same shape as CapNet: one application, many lenders, free to the merchant, lender pays a commission when a deal funds. Fourteen years of head start, 75+ lenders, established brand and SEO. It is described in the market as operating as a broker earning commission from its lending partners — which independently reinforces the recommendation in B.3.1 to plan for broker classification.
 
 ## Where Lendio is weak, and why it matters
 
-The reported weaknesses map almost exactly onto Connect Capital's stated differentiators:
+The reported weaknesses map almost exactly onto CapNet's stated differentiators:
 
-| Reported Lendio weakness | Connect Capital's answer |
+| Reported Lendio weakness | CapNet's answer |
 |---|---|
 | Merchants report heavy marketing contact after applying | Merchant-controlled authorization: nobody gets the file without an explicit, scoped, revocable grant |
 | Rates and terms are not knowable until you formally apply | Pre-qualification match preview with match rationale, before documents |
@@ -1157,7 +1157,7 @@ The reported weaknesses map almost exactly onto Connect Capital's stated differe
 
 The accurate and stronger pitch is:
 
-> Marketplaces for small-business capital already exist and already work at scale. Merchants distrust them for specific, documented reasons: they lose control of their information the moment they apply, they cannot see who has it, and they cannot see what the platform is earning. Connect Capital is the same marketplace motion rebuilt on merchant-controlled permissions and an auditable transaction record.
+> Marketplaces for small-business capital already exist and already work at scale. Merchants distrust them for specific, documented reasons: they lose control of their information the moment they apply, they cannot see who has it, and they cannot see what the platform is earning. CapNet is the same marketplace motion rebuilt on merchant-controlled permissions and an auditable transaction record.
 
 This is better ground than novelty. It means the market is validated — the question is execution on trust architecture, not whether demand exists.
 
@@ -1180,7 +1180,7 @@ Price competition still contributes, but it is no longer the mechanism. That is 
 
 On a $100,000 advance:
 
-| | Today (ISO channel) | On Connect Capital |
+| | Today (ISO channel) | On CapNet |
 |---|---|---|
 | Advance | $100,000 | $100,000 |
 | Acquisition cost | ~12 points = $12,000 | 3% = $3,000 |
@@ -1252,11 +1252,11 @@ Founder insight, August 18. This is the correct framing and it should replace th
 
 ## The reframe
 
-Connect Capital cannot stop cold calls. It does not need to. **It destroys their expected value.**
+CapNet cannot stop cold calls. It does not need to. **It destroys their expected value.**
 
 Today a merchant takes every unsolicited funding call because any one of them might be the capital they need. The call is a lottery ticket they feel obliged to scratch. Once a merchant has authorized funders actively working their file inside the platform, and knows those funders will reach them there, the ticket is worth nothing. They can hang up without wondering what they missed.
 
-This is a demand-side solution to a supply-side problem, and it is the only one available. Cold calls are structurally guaranteed: **funding creates a UCC filing, the filing is public, and UCC lists are the primary source of MCA calling lists.** Every merchant the platform funds joins those lists regardless of anything Connect Capital does. Which is precisely why "safe to ignore" is the achievable goal and "make them stop" is not.
+This is a demand-side solution to a supply-side problem, and it is the only one available. Cold calls are structurally guaranteed: **funding creates a UCC filing, the filing is public, and UCC lists are the primary source of MCA calling lists.** Every merchant the platform funds joins those lists regardless of anything CapNet does. Which is precisely why "safe to ignore" is the achievable goal and "make them stop" is not.
 
 ## Four things this requires
 

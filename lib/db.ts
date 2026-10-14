@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Database access
+ * CapNet — Database access
  *
  * Two rules this file exists to enforce:
  *

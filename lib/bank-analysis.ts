@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Bank transaction analysis
+ * CapNet — Bank transaction analysis
  *
  * Dependency-free. Takes normalized transactions from an aggregator and
  * derives everything the platform needs from a merchant's banking.

@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Authorization
+ * CapNet — Authorization
  *
  * The narrow gate everything else passes through. A funder reaching a
  * merchant's file without a row here is the failure mode the whole company is

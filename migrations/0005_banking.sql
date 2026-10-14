@@ -1,4 +1,4 @@
--- Connect Capital — M5 Banking guards
+-- CapNet — M5 Banking guards
 
 BEGIN;
 

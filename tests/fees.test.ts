@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Fee engine tests
+ * CapNet — Fee engine tests
  *
  * This is where the company's revenue is computed. Two failure modes matter
  * more than the rest: pricing a historical funding against today's schedule,

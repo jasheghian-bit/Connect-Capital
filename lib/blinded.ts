@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Blinded match card
+ * CapNet — Blinded match card
  *
  * What a funder sees BEFORE the merchant authorizes them.
  *

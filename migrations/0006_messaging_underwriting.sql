@@ -1,4 +1,4 @@
--- Connect Capital — M6/M7 Messaging and underwriting guards
+-- CapNet — M6/M7 Messaging and underwriting guards
 
 BEGIN;
 

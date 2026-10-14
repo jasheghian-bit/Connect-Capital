@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Message safety tests
+ * CapNet — Message safety tests
  *
  * The message channel is the one circumvention route that leaves no trace in
  * any log. Everything else the platform can see; a funder typing a phone
@@ -62,7 +62,7 @@ describe('false positives are the cost of getting this wrong', () => {
   });
 
   it('a platform link is clean', () => {
-    const r = scanMessage('The document is at https://app.connectcapital.com/docs/4471');
+    const r = scanMessage('The document is at https://app.capnet.io/docs/4471');
     expect(r.severity).toBe('none');
   });
 

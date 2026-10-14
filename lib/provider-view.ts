@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Provider view resolution
+ * CapNet — Provider view resolution
  *
  * One function decides what a funder sees about a merchant, and it decides it
  * from the authorization state rather than from where the request came in.

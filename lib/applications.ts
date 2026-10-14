@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Application service
+ * CapNet — Application service
  *
  * Covers the funnel from an anonymous visitor answering six questions to a
  * submitted application ready for matching.
@@ -260,17 +260,33 @@ export async function validateForSubmission(
   });
 }
 
+export interface ConsentText {
+  version: string;
+  hash: string;
+}
+
 /**
  * Idempotent. A merchant double-tapping submit on a slow connection is the
  * normal case, not an edge case — the guard is a status check, not a token.
+ *
+ * Both platform terms AND the privacy policy are required (see
+ * lib/consents-required.ts, form 'application_submit'). Each is recorded as
+ * its own consent row with the exact text version and hash shown, in the same
+ * transaction as the status change.
  */
 export async function submitApplication(
   actor: Actor,
   applicationId: string,
-  consentTextVersion: string,
-  consentTextHash: string,
+  consents_: { terms: ConsentText; privacy: ConsentText },
   ctx: { ip?: string; userAgent?: string },
 ): Promise<{ submitted: boolean; gaps: SubmissionGap[] }> {
+  const consentGaps: SubmissionGap[] = [];
+  if (!consents_?.terms?.version || !consents_?.terms?.hash)
+    consentGaps.push({ field: 'platform_terms', message: 'Accept the platform terms' });
+  if (!consents_?.privacy?.version || !consents_?.privacy?.hash)
+    consentGaps.push({ field: 'privacy_policy', message: 'Acknowledge the privacy policy' });
+  if (consentGaps.length > 0) return { submitted: false, gaps: consentGaps };
+
   const gaps = await validateForSubmission(actor, applicationId);
   if (gaps.length > 0) return { submitted: false, gaps };
 
@@ -303,16 +319,22 @@ export async function submitApplication(
       // The consent artifact is written in the same transaction as the status
       // change. "What did the merchant agree to when they submitted, and
       // when" has to be answerable from one row, not reconstructed.
-      await tx.insert(consents).values({
-        consentType: 'platform_terms',
+      const row = (consentType: 'platform_terms' | 'privacy_policy', t: ConsentText) => ({
+        consentType,
         subjectType: 'application',
         subjectId: applicationId,
-        textVersion: consentTextVersion,
-        textHash: consentTextHash,
+        textVersion: t.version,
+        textHash: t.hash,
         acceptedByUserId: actor.userId,
         ip: ctx.ip ?? null,
         userAgent: ctx.userAgent ?? null,
       });
+      await tx
+        .insert(consents)
+        .values([
+          row('platform_terms', consents_.terms),
+          row('privacy_policy', consents_.privacy),
+        ]);
 
       await tx
         .update(applications)

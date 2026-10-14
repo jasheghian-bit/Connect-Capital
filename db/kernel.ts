@@ -1,5 +1,5 @@
 /**
- * Connect Capital — M0 Kernel Schema
+ * CapNet — M0 Kernel Schema
  *
  * Identity, organizations, membership, consent, and audit.
  * Nothing domain-specific lives here. Everything above the kernel
@@ -74,6 +74,8 @@ export const consentTypeEnum = pgEnum('consent_type', [
   'fcra_credit_pull',
   'specialist_assignment',
   'provider_participation_agreement',
+  'marketing_email', // opt-in only; never bundled with terms (0010)
+  'cookie_preferences', // non-essential cookie choices (0010)
 ]);
 
 // ---------------------------------------------------------------------------

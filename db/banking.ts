@@ -1,5 +1,5 @@
 /**
- * Connect Capital — M5 Banking schema
+ * CapNet — M5 Banking schema
  *
  * ── WHAT IS DELIBERATELY NOT STORED ────────────────────────────────────────
  *

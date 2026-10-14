@@ -1,5 +1,5 @@
 /**
- * Connect Capital — Underwriting state and decline aggregation
+ * CapNet — Underwriting state and decline aggregation
  *
  * Two pure concerns, both consequential.
  *

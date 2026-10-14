@@ -1,5 +1,5 @@
 /**
- * Connect Capital — M8 Offers schema
+ * CapNet — M8 Offers schema
  *
  * ── NOTHING IS EVER OVERWRITTEN ────────────────────────────────────────────
  *
